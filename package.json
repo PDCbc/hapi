@@ -7,8 +7,9 @@
     "start": "node init.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Andrew Hobden <andrew+scoop@hoverbear.org>",
   "license": "MPL",
+  "private": true,
   "dependencies": {
     "async": "^0.9.0",
     "bcrypt": "^0.7.8",

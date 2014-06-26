@@ -16,4 +16,4 @@ VOLUME ["/app"]
 WORKDIR /app
 
 # Install Dependencies then start
-CMD npm install && supervisor --watch . -i node_modules init.js 
+CMD npm install --no-bin-links && supervisor --watch . -i node_modules init.js 

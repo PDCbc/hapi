@@ -208,6 +208,8 @@ function oauth(callback, data) {
         function consumerCallback(consumerKey, done) {
             // TODO: Same as one below.
             models.consumer.findOne({ key: consumerKey }).exec(function (err, consumer) {
+                console.log(consumerKey);
+                console.log(consumer);
                 if (err) { return done(err); }
                 if (!consumer) { return done(null, false); }
                 return done(null, consumer, consumer.secret);

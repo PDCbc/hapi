@@ -109,9 +109,13 @@ function database(callback, data) {
 function models(callback, data) {
     return callback(null, {
         user:         require('./models/user'),
+        // OAuth
         consumer:     require('./models/consumer'),
         requestToken: require('./models/requestToken'),
-        accessToken:  require('./models/accessToken')
+        accessToken:  require('./models/accessToken'),
+        // Data
+        query:  require('./models/query'),
+        result:  require('./models/result')
     });
 }
 

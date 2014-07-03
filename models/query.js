@@ -23,10 +23,9 @@ var schema = Schema({
         // The set of results for the query.
         type: [{
             type: ObjectId,
-            ref: 'Result',
-            required: true
-        }], // Array of mixed.
-        required: true
+            ref: 'Result'
+        }],
+        default: []
     },
     /**
      * Things that are interesting to the adapter, but it doesn't require them.

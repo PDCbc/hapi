@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+    _ = require('lodash'),
     logger = require('./lib/logger');
 
 async.auto({
@@ -11,6 +12,7 @@ async.auto({
     models:          [ 'database', models ],
     auth:            [ 'models', 'httpd', auth ],
     routes:          [ 'auth', 'models', 'httpd', routes ],
+    devroutes:       [ 'auth', 'models', 'httpd', devroutes ],
     oauth:           [ 'models', 'httpd', oauth ]
 }, complete);
 
@@ -154,7 +156,7 @@ function routes(callback, data) {
         passport = require('passport');
     // Create a User.
     router.get('/create',
-        // ensureLoggedIn('/login'),
+        // ensureLoggedIn('/login'), // TODO: In production, this should be secured somehow.
         function (req, res) {
             return res.render('create', req.user);
         }
@@ -182,6 +184,11 @@ function routes(callback, data) {
     router.post('/login',
         passport.authenticate('local', { successReturnToOrRedirect: '/success', failureRedirect: '/login?failure' })
     );
+    // Log out.
+    router.get('/logout', function (req, res) {
+        req.logout();
+        res.redirect('/login');
+    });
     // Other routes.
     router.get('/', function (req, res) {
         return res.send('Good!');
@@ -192,8 +199,82 @@ function routes(callback, data) {
             return res.render('success', req.user);
         }
     );
+
     // Attach the router.
     data.httpd.use(router);
+    callback(null, router);
+}
+
+function devroutes(callback, data) {
+    var router = new require('express').Router(),
+        models = data.models,
+        ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn,
+        ensureLoggedOut = require('connect-ensure-login').ensureLoggedOut;
+
+    // Show the form for adding a query.
+    router.get('/query', function (req, res) {
+        console.log('Derp Query');
+        models.query.find().exec(function (err, queries) {
+            if (err) { return res.send(err); }
+            res.render('dev/query', { queries: queries });
+        });
+    });
+    router.post('/query', function (req, res) {
+        req.body.executions = []; // No executions right now.
+        console.log(req.body);
+        models.query.create(req.body, function (err) {
+            if (err) { return res.send(err); }
+            res.send('Got it!');
+        });
+    });
+
+    // Show the form for adding a result.
+    router.get('/result', function (req, res) {
+        console.log('Derp Result');
+        async.parallel({
+            queries: function (callback) {
+                models.query.find().exec(callback);
+            },
+            results: function (callback) {
+                models.result.find().exec(callback);
+            },
+            endpoints: function (callback) {
+                // TODO: Don't mock these.
+                callback(null, [
+                    {
+                        _id: '12345678901234567890123a',
+                        name: 'First'
+                    },
+                    {
+                        _id: '12345678901234567890123b',
+                        name: 'Second'
+                    }
+                ]);
+            }
+        }, function (err, results) {
+            if (err) { return res.send(err); }
+            return res.render('dev/result', results);
+        });
+    });
+    router.post('/result', function (req, res) {
+        // TODO: Use a schema validator.
+        req.body.value = JSON.parse(req.body.value);
+        console.log(req.body);
+        models.result.create(req.body, function (err, result) {
+            if (err) { return res.send(err); }
+            models.query.findByIdAndUpdate(req.body.query_id, {
+                $push: {
+                    executions: result._id
+                }
+            }, function (err) {
+                if (err) { return res.send(err); }
+                res.send('Got it!');
+            });
+        });
+    });
+
+    // Attach the router to `/dev`
+    data.httpd.use('/dev', router);
     callback(null, router);
 }
 
@@ -212,8 +293,6 @@ function oauth(callback, data) {
         function consumerCallback(consumerKey, done) {
             // TODO: Same as one below.
             models.consumer.findOne({ key: consumerKey }).exec(function (err, consumer) {
-                console.log(consumerKey);
-                console.log(consumer);
                 if (err) { return done(err); }
                 if (!consumer) { return done(null, false); }
                 return done(null, consumer, consumer.secret);
@@ -234,7 +313,6 @@ function oauth(callback, data) {
         },
         function validateCallback(timestamp, nonce, done) {
             // TODO: Implement Timestamp and Nonce.
-            console.log('validateCallback. ' + arguments);
             done(null, true);
         }
     ));

@@ -27,18 +27,21 @@ var schema = Schema({
     created_at: {
         // The date the result was created. It starts in a 'queued' state.
         type: Date,
-        required: true
+        required: true,
+        default: Date.now()
     },
     updated_at: {
         // The date the result's status was updated to either 'complete' or 'canceled'
-        type: String,
-        required: true
+        type: Date,
+        required: true,
+        default: Date.now()
     },
     status: {
         // The status of the endpoint result.
         type: String,
         enum: ['complete', 'canceled', 'queued'],
         required: true,
+        default: 'queued'
     },
 });
 

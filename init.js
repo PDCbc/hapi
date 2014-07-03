@@ -189,10 +189,60 @@ function routes(callback, data) {
         req.logout();
         res.redirect('/login');
     });
-    // Other routes.
-    router.get('/', function (req, res) {
-        return res.send('Good!');
-    });
+
+    // A list of valid items to visualize.
+    router.get('/',
+        ensureLoggedIn('/login'),
+        function (req, res) {
+            data.models.query.find({}, "title description").exec(function (err, data) {
+                if (err) { return res.send(err); }
+                res.json(data);
+            });
+        }
+    );
+
+    // The information, data, and meta-information for the specified item.
+    router.get('/:id',
+        ensureLoggedIn('/login'),
+        function (req, res) {
+            data.models.query.findById(req.params.id).populate('executions').exec(function (err, data) {
+                if (err) { return res.send(err); }
+                // Prepare a response in the given format.
+                var item = {
+                    _id: data._id,
+                    title: data.title,
+                    description: data.description,
+                    data: {},
+                    meta: {
+                        user_id: data.user_id || null,
+                        map: data.map || null,
+                        filter: data.filter || null,
+                        reduce: data.reduce || null
+                    }
+                };
+                // Populate the data section. Pluck only the values.
+                item.data = _.chain(data.executions)
+                    .where({ status: 'complete' }) // Make sure it's complete.
+                    .pluck('value')
+                    .reduce(function reduce(result, item) {
+                        // Get the keys, map over them.
+                        _.keys(item).map(function map(key) {
+                            // Make sure the key exists in the results otherwise we get an error.
+                            if (!result[key]) {
+                                result[key] = [];
+                            }
+                            // Push the result. Returning is not necessary.
+                            result[key].push(item[key]);
+                        });
+                        return result; // Return the result into the reduce.
+                    }, {})
+                    .value(); // Pull the value out of the chain.
+                res.json(item);
+            });
+        }
+    );
+
+    // Other
     router.get('/success',
         ensureLoggedIn('/login'),
         function (req, res) {
@@ -232,23 +282,13 @@ function devroutes(callback, data) {
     router.get('/result', function (req, res) {
         console.log('Derp Result');
         async.parallel({
-            queries: function (callback) {
-                models.query.find().exec(callback);
-            },
-            results: function (callback) {
-                models.result.find().exec(callback);
-            },
+            queries: function (callback) { models.query.find().exec(callback); },
+            results: function (callback) { models.result.find().exec(callback); },
             endpoints: function (callback) {
                 // TODO: Don't mock these.
                 callback(null, [
-                    {
-                        _id: '12345678901234567890123a',
-                        name: 'First'
-                    },
-                    {
-                        _id: '12345678901234567890123b',
-                        name: 'Second'
-                    }
+                    { _id: '12345678901234567890123a', name: 'First' },
+                    { _id: '12345678901234567890123b', name: 'Second' }
                 ]);
             }
         }, function (err, results) {

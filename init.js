@@ -192,7 +192,7 @@ function routes(callback, data) {
 
     // A list of valid items to visualize.
     router.get('/',
-        ensureLoggedIn('/login'),
+        passport.authenticate('token', { session: false }),
         function (req, res) {
             data.models.query.find({}, "title description").exec(function (err, data) {
                 if (err) { return res.send(err); }
@@ -203,7 +203,7 @@ function routes(callback, data) {
 
     // The information, data, and meta-information for the specified item.
     router.get('/:id',
-        ensureLoggedIn('/login'),
+        passport.authenticate('token', { session: false }),
         function (req, res) {
             data.models.query.findById(req.params.id).populate('executions').exec(function (err, data) {
                 if (err) { return res.send(err); }
@@ -359,7 +359,7 @@ function oauth(callback, data) {
     passport.use('token', new TokenStrategy(
         function consumerCallback(consumerKey, done) {
             // TODO: Same as the one above.
-            models.consumer.findOne({ identifier: consumerKey }).exec(function (err, consumer) {
+            models.consumer.findOne({ key: consumerKey }).exec(function (err, consumer) {
                 if (err) { return done(err); }
                 if (!consumer) { return done(null, false); }
                 return done(null, consumer, consumer.secret);
@@ -375,7 +375,6 @@ function oauth(callback, data) {
             });
         },
         function validateCallback(timestamp, nonce, done) {
-            console.log("Validate callback called");
             // TODO: Implement Timestamp and Nonce.
             done(null, true);
         }
@@ -449,7 +448,7 @@ function oauth(callback, data) {
             if (String(consumer._id) !== String(info.consumer)) { return done(null, false); }
             var token = generateToken(16),
                 secret = generateToken(64);
-            models.accessToken.create({ identifer: token, secret: secret, user: info.user, consumer: info.consumer },
+            models.accessToken.create({ identifier: token, secret: secret, user: info.user, consumer: info.consumer },
                 function (err) {
                     if (err) { return done(err); }
                     return done(null, token, secret);

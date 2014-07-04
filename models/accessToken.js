@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
     Mixed = Schema.Types.Mixed;
 
 var schema = Schema({
-    identifer: {
+    identifier: {
         type: String,
         required: true,
         indexed: true

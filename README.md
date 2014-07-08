@@ -2,7 +2,7 @@
 ```bash
 git clone https://github.com/Hoverbear/scoop-queryengine.git
 cd scoop-queryengine
-docker build -t queryengine .
+docker build --rm=true -t queryengine .
 docker pull mongo
 ```
 

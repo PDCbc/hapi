@@ -220,7 +220,7 @@ function routes(callback, data) {
           }
         };
         // Populate the data section. Pluck only the values.
-        item.data = _.chain(data.executions)
+        item.data.json = _.chain(data.executions)
           .where({ status: 'complete' }) // Make sure it's complete.
           .pluck('value')
           .reduce(function reduce(result, item) {
@@ -279,7 +279,7 @@ function devroutes(callback, data) {
 
   // Show the form for adding a result.
   router.get('/result', function (req, res) {
-    console.log('Derp Result');
+    console.log('Result');
     async.parallel({
       queries: function (callback) { models.query.find().exec(callback); },
       results: function (callback) { models.result.find().exec(callback); },

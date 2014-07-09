@@ -40,8 +40,8 @@ function certificate(next) {
   var fs = require('fs');
   // Get the certificates.
   async.auto({
-    key:  function (next) { fs.readFile('cert/server.key', 'utf8', next); },
-    cert: function (next) { fs.readFile('cert/server.crt', 'utf8', next); }
+    key:  function (next) { fs.readFile('./cert/server.key', 'utf8', next); },
+    cert: function (next) { fs.readFile('./cert/server.crt', 'utf8', next); }
   }, function (error, results) {
     if (error) { generateCertificate(error, results, next); }
     else { return next(error, results); }

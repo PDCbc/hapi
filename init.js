@@ -197,7 +197,7 @@ function routes(callback, data) {
   router.get('/api',
     passport.authenticate('token', { session: false }),
     function (req, res) {
-      data.models.query.find({}, "title description").exec(function (err, data) {
+      data.models.query.find({}, "-_id title description").exec(function (err, data) {
         if (err) { return res.send(err); }
         res.json({ visualizations: data });
       });
@@ -205,14 +205,14 @@ function routes(callback, data) {
   );
 
   // The information, data, and meta-information for the specified item.
-  router.get('/api/:id',
+  router.get('/api/:title',
     passport.authenticate('token', { session: false }),
     function (req, res) {
-      data.models.query.findById(req.params.id).populate('executions').exec(function (err, data) {
+      data.models.query.findOne({ title: req.params.title }).populate('executions').exec(function (err, data) {
         if (err) { return res.send(err); }
         // Prepare a response in the given format.
         var item = {
-          _id: data._id,
+          //_id: data._id,
           title: data.title,
           description: data.description,
           data: {},

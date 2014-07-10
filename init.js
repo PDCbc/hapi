@@ -156,13 +156,13 @@ function routes(callback, data) {
   // Create a User.
   router.route('/user')
     .get(
-      ensureLoggedIn('/login'),
+      ensureLoggedIn('/auth'),
       function (req, res) {
         return res.render('create', req.user);
       }
     )
     .post(
-      ensureLoggedIn('/login'),
+      ensureLoggedIn('/auth'),
       function create(req, res) {
         if (req.body.username && req.body.password) {
           var user = new data.models.user({
@@ -170,7 +170,7 @@ function routes(callback, data) {
             password: req.body.password
           }).save(function (error) {
             if (error) { return res.status(401).send('You didn\'t do it!'); }
-            return res.redirect('/login?good');
+            return res.redirect('/auth?good');
           });
         } else {
           return res.status(401).send('More info needed');
@@ -194,12 +194,12 @@ function routes(callback, data) {
   });
 
   // A list of valid items to visualize.
-  router.get('/api/',
+  router.get('/api',
     passport.authenticate('token', { session: false }),
     function (req, res) {
       data.models.query.find({}, "title description").exec(function (err, data) {
         if (err) { return res.send(err); }
-        res.json(data);
+        res.json({ visualizations: data });
       });
     }
   );
@@ -388,7 +388,7 @@ function oauth(callback, data) {
 
   // NOTE: Oauthorize is not smart about handling nested routers. We ~MUST~ declare the entire route.
   router.get('/oauth/authorize',
-    ensureLoggedIn(),
+    ensureLoggedIn('/auth'),
     provider.userAuthorization(function (requestToken, done) {
       models.requestToken.findOne({ identifier: requestToken }).populate('consumer').exec(function (err, token) {
         if (err) { return done(err); }
@@ -400,7 +400,7 @@ function oauth(callback, data) {
     }
   );
   router.post('/oauth/authorize',
-    ensureLoggedIn(),
+    ensureLoggedIn('/auth'),
     // TODO: Use Scopes.
     provider.userDecision(function (requestToken, user, res, done) {
       var verifier = generateToken(8);

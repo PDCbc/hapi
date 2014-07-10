@@ -154,43 +154,47 @@ function routes(callback, data) {
       ensureLoggedOut = require('connect-ensure-login').ensureLoggedOut,
       passport = require('passport');
   // Create a User.
-  router.get('/create',
-    // ensureLoggedIn('/login'), // TODO: In production, this should be secured somehow.
-    function (req, res) {
-      return res.render('create', req.user);
-    }
-  );
-  router.post('/create',
-    // ensureLoggedIn('/login'),
-    function create(req, res) {
-      if (req.body.username && req.body.password) {
-        var user = new data.models.user({
-          username: req.body.username,
-          password: req.body.password
-        }).save(function (error) {
-          if (error) { return res.status(401).send('You didn\'t do it!'); }
-          return res.redirect('/login?good');
-        });
-      } else {
-        return res.status(401).send('More info needed');
+  router.route('/user')
+    .get(
+      ensureLoggedIn('/login'),
+      function (req, res) {
+        return res.render('create', req.user);
       }
-    }
-  );
+    )
+    .post(
+      ensureLoggedIn('/login'),
+      function create(req, res) {
+        if (req.body.username && req.body.password) {
+          var user = new data.models.user({
+            username: req.body.username,
+            password: req.body.password
+          }).save(function (error) {
+            if (error) { return res.status(401).send('You didn\'t do it!'); }
+            return res.redirect('/login?good');
+          });
+        } else {
+          return res.status(401).send('More info needed');
+        }
+      }
+    );
+
+
   // Login a User.
-  router.get('/login', function (req, res) {
-    res.render('login', req.user);
-  });
-  router.post('/login',
-    passport.authenticate('local', { successReturnToOrRedirect: '/success', failureRedirect: '/login?failure' })
-  );
+  router.route('/auth')
+    .get(function (req, res) {
+      res.render('login', req.user);
+    })
+    .post(
+      passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/auth?failure' })
+    );
   // Log out.
-  router.get('/logout', function (req, res) {
+  router.get('/auth/logout', function (req, res) {
     req.logout();
-    res.redirect('/login');
+    res.redirect('/auto');
   });
 
   // A list of valid items to visualize.
-  router.get('/',
+  router.get('/api/',
     passport.authenticate('token', { session: false }),
     function (req, res) {
       data.models.query.find({}, "title description").exec(function (err, data) {
@@ -201,7 +205,7 @@ function routes(callback, data) {
   );
 
   // The information, data, and meta-information for the specified item.
-  router.get('/:id',
+  router.get('/api/:id',
     passport.authenticate('token', { session: false }),
     function (req, res) {
       data.models.query.findById(req.params.id).populate('executions').exec(function (err, data) {
@@ -241,14 +245,6 @@ function routes(callback, data) {
     }
   );
 
-  // Other
-  router.get('/success',
-      ensureLoggedIn('/login'),
-      function (req, res) {
-          return res.render('success', req.user);
-      }
-  );
-
   // Attach the router.
   data.httpd.use(router);
   callback(null, router);
@@ -261,56 +257,55 @@ function devroutes(callback, data) {
       ensureLoggedOut = require('connect-ensure-login').ensureLoggedOut;
 
   // Show the form for adding a query.
-  router.get('/query', function (req, res) {
-    console.log('Query');
-    models.query.find().exec(function (err, queries) {
-        if (err) { return res.send(err); }
-        res.render('dev/query', { queries: queries });
-    });
-  });
-  router.post('/query', function (req, res) {
-    req.body.executions = []; // No executions right now.
-      console.log(req.body);
-      models.query.create(req.body, function (err) {
-        if (err) { return res.send(err); }
-        res.send('Got it!');
+  router.route('/query')
+    .get(function (req, res) {
+      models.query.find().exec(function (err, queries) {
+          if (err) { return res.send(err); }
+          res.render('dev/query', { queries: queries });
       });
-  });
+    })
+    .post(function (req, res) {
+      req.body.executions = []; // No executions right now.
+        console.log(req.body);
+        models.query.create(req.body, function (err) {
+          if (err) { return res.send(err); }
+          res.send('Got it!');
+        });
+    });
 
   // Show the form for adding a result.
-  router.get('/result', function (req, res) {
-    console.log('Result');
-    async.parallel({
-      queries: function (callback) { models.query.find().exec(callback); },
-      results: function (callback) { models.result.find().exec(callback); },
-      endpoints: function (callback) {
-          // TODO: Don't mock these.
-          callback(null, [
-              { _id: '12345678901234567890123a', name: 'First' },
-              { _id: '12345678901234567890123b', name: 'Second' }
-          ]);
-      }
-    }, function (err, results) {
-        if (err) { return res.send(err); }
-        return res.render('dev/result', results);
-    });
-  });
-  router.post('/result', function (req, res) {
-    // TODO: Use a schema validator.
-    req.body.value = JSON.parse(req.body.value);
-    console.log(req.body);
-    models.result.create(req.body, function (err, result) {
-      if (err) { return res.send(err); }
-      models.query.findByIdAndUpdate(req.body.query_id, {
-        $push: {
-          executions: result._id
+  router.route('/result')
+    .get(function (req, res) {
+      async.parallel({
+        queries: function (callback) { models.query.find().exec(callback); },
+        results: function (callback) { models.result.find().exec(callback); },
+        endpoints: function (callback) {
+            // TODO: Don't mock these.
+            callback(null, [
+                { _id: '12345678901234567890123a', name: 'First' },
+                { _id: '12345678901234567890123b', name: 'Second' }
+            ]);
         }
-      }, function (err) {
+      }, function (err, results) {
+          if (err) { return res.send(err); }
+          return res.render('dev/result', results);
+      });
+    })
+    .post(function (req, res) {
+      // TODO: Use a schema validator.
+      req.body.value = JSON.parse(req.body.value);
+      models.result.create(req.body, function (err, result) {
         if (err) { return res.send(err); }
-        res.send('Got it!');
+        models.query.findByIdAndUpdate(req.body.query_id, {
+          $push: {
+            executions: result._id
+          }
+        }, function (err) {
+          if (err) { return res.send(err); }
+          res.send('Got it!');
+        });
       });
     });
-  });
 
   // Attach the router to `/dev`
   data.httpd.use('/dev', router);

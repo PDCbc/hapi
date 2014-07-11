@@ -122,11 +122,10 @@ function models(callback, data) {
 
 function auth(callback, data) {
   var passport = require('passport'),
-      LocalStrategy = require('passport-local'),
-      user = data.models.user;
+      LocalStrategy = require('passport-local');
   passport.use(new LocalStrategy(
     function (username, password, done) {
-      user.findOne({ username: username }).exec(function (error, identity) {
+      data.models.user.findOne({ username: username }).exec(function (error, identity) {
         if (error) { return done(error); }
         if (!identity) { return done(null, false); }
         identity.comparePassword(password, function (error, correct) {
@@ -137,11 +136,13 @@ function auth(callback, data) {
       });
     }
   ));
+  // TODO: These don't work quite right.
   passport.serializeUser(function(user, done) {
-    return done(null, user._id);
+    return done(null, user);
   });
-  passport.deserializeUser(function(id, done) {
-    user.findById(id, function (err, user) {
+  // TODO: These don't work quite right.
+  passport.deserializeUser(function(user, done) {
+    data.models.user.findById(user._id).exec(function (err, user) {
       return done(err, (user) ? user : false);
     });
   });

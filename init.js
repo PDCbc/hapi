@@ -10,10 +10,8 @@ async.auto({
   certificate:     [ 'environment', certificate ],
   httpd:           [ 'environment', httpd ],
   models:          [ 'database', models ],
-  auth:            [ 'models', 'httpd', auth ],
-  routes:          [ 'auth', 'models', 'httpd', routes ],
-  devroutes:       [ 'auth', 'models', 'httpd', devroutes ],
-  oauth:           [ 'models', 'httpd', oauth ]
+  routes:          [ 'models', 'httpd', routes ],
+  devroutes:       [ 'models', 'httpd', devroutes ],
 }, complete);
 
 function environment(callback) {
@@ -68,8 +66,7 @@ function certificate(next) {
 }
 
 function httpd(callback, data) {
-  var server = require('express')(),
-      passport = require('passport');
+  var server = require('express')();
   // Set the server engine.
   server.set('view engine', 'hbs');
   // Middleware (https://github.com/senchalabs/connect#middleware)
@@ -86,9 +83,6 @@ function httpd(callback, data) {
     secret: process.env.SECRET,
     cookie: { secure: true }
   }));
-  // Passport middleware.
-  server.use(passport.initialize());
-  server.use(passport.session());
   // Protects against CSRF.
   // server.use(require('csurf')());
   // Compresses responses.
@@ -121,49 +115,22 @@ function models(callback, data) {
 }
 
 function auth(callback, data) {
-  var passport = require('passport'),
-      LocalStrategy = require('passport-local');
-  passport.use(new LocalStrategy(
-    function (username, password, done) {
-      data.models.user.findOne({ username: username }).exec(function (error, identity) {
-        if (error) { return done(error); }
-        if (!identity) { return done(null, false); }
-        identity.comparePassword(password, function (error, correct) {
-          if (error) { return done(error, null); }
-          if (!correct) { return done(null, false); }
-          return done(null, identity);
-        });
-      });
-    }
-  ));
-  // TODO: These don't work quite right.
-  passport.serializeUser(function(user, done) {
-    return done(null, user);
-  });
-  // TODO: These don't work quite right.
-  passport.deserializeUser(function(user, done) {
-    data.models.user.findById(user._id).exec(function (err, user) {
-      return done(err, (user) ? user : false);
-    });
-  });
+  logger.error("Auth not implemented yet");
   return callback(null);
 }
 
 function routes(callback, data) {
-  var router = new require('express').Router(),
-      ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn,
-      ensureLoggedOut = require('connect-ensure-login').ensureLoggedOut,
-      passport = require('passport');
+  var router = new require('express').Router();
   // Create a User.
   router.route('/user')
     .get(
-      ensureLoggedIn('/auth'),
+      function (req, res, next) { logger.error("Auth not implemented yet"); },
       function (req, res) {
         return res.render('create', req.user);
       }
     )
     .post(
-      ensureLoggedIn('/auth'),
+      function(req, res, next) { logger.error("Auth Not implemented yet"); },
       function create(req, res) {
         if (req.body.username && req.body.password) {
           var user = new data.models.user({
@@ -185,18 +152,19 @@ function routes(callback, data) {
     .get(function (req, res) {
       res.render('login', req.user);
     })
-    .post(
-      passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/auth?failure' })
-    );
+    .post(function (req, res) {
+      logger.error("Auth not implemented yet.");
+    });
   // Log out.
   router.get('/auth/logout', function (req, res) {
-    req.logout();
+    logger.error("Auth Not implemented yet.");
     res.redirect('/auto');
+
   });
 
   // A list of valid items to visualize.
   router.get('/api',
-    passport.authenticate('token', { session: false }),
+    //function (req, res, next) { logger.error("Auth not implemented yet"); next(); },
     function (req, res) {
       data.models.query.find({}, "-_id title description").exec(function (err, data) {
         if (err) { return res.send(err); }
@@ -207,7 +175,7 @@ function routes(callback, data) {
 
   // The information, data, and meta-information for the specified item.
   router.get('/api/:title',
-    passport.authenticate('token', { session: false }),
+    function (req, res, next) { logger.error("Auth Not implemented yet."); next(); },
     function (req, res) {
       data.models.query.findOne({ title: req.params.title }).populate('executions').exec(function (err, data) {
         if (err) { return res.send(err); }
@@ -253,9 +221,7 @@ function routes(callback, data) {
 
 function devroutes(callback, data) {
   var router = new require('express').Router(),
-      models = data.models,
-      ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn,
-      ensureLoggedOut = require('connect-ensure-login').ensureLoggedOut;
+      models = data.models;
 
   // Show the form for adding a query.
   router.route('/query')
@@ -310,149 +276,6 @@ function devroutes(callback, data) {
 
   // Attach the router to `/dev`
   data.httpd.use('/dev', router);
-  callback(null, router);
-}
-
-function oauth(callback, data) {
-  var passport = require('passport'),
-      crypto = require('crypto'),
-      ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn,
-      ConsumerStrategy = require('passport-http-oauth').ConsumerStrategy,
-      TokenStrategy = require('passport-http-oauth').TokenStrategy,
-      models = data.models;
-  function generateToken(length) {
-    return crypto.randomBytes(length / 2).toString('hex');
-  }
-  // https://github.com/jaredhanson/oauthorize/blob/8ef21f5283c4cc81328a2acd7f99bb64c03b2252/examples/express2/auth.js#L48
-  passport.use('consumer', new ConsumerStrategy(
-    function consumerCallback(consumerKey, done) {
-      // TODO: Same as one below.
-      models.consumer.findOne({ key: consumerKey }).exec(function (err, consumer) {
-        if (err) { return done(err); }
-        if (!consumer) { return done(null, false); }
-        return done(null, consumer, consumer.secret);
-      });
-    },
-    function tokenCallback(requestToken, done) {
-      models.requestToken.findOne({ identifier: requestToken }).exec(function (err, token) {
-        if (err) { return done(err); }
-        if (!token) { return done(null, false); }
-        var info = {
-          verifier: token.verifier,
-          consumer: token.consumer,
-          user: token.user,
-          approved: token.approved
-        };
-        done(null, token.secret, info);
-      });
-    },
-    function validateCallback(timestamp, nonce, done) {
-      // TODO: Implement Timestamp and Nonce.
-      done(null, true);
-    }
-  ));
-  passport.use('token', new TokenStrategy(
-    function consumerCallback(consumerKey, done) {
-      // TODO: Same as the one above.
-      models.consumer.findOne({ key: consumerKey }).exec(function (err, consumer) {
-        if (err) { return done(err); }
-        if (!consumer) { return done(null, false); }
-        return done(null, consumer, consumer.secret);
-      });
-    },
-    function verifyCallback(accessToken, done) {
-      models.accessToken.findOne({ identifier: accessToken }).populate('user').exec(function (err, token) {
-        if (err) { return done(err); }
-        if (!token || !token.user) { return done(null, false); }
-        // TODO: Use Scopes.
-        var info = { scope: '*' };
-        done(null, token.user, token.secret, info);
-      });
-    },
-    function validateCallback(timestamp, nonce, done) {
-      // TODO: Implement Timestamp and Nonce.
-      done(null, true);
-    }
-  ));
-  // Endpoints
-  var router = new require('express').Router(),
-      provider = require('oauthorize').createServer();
-
-  provider.serializeClient(function(client, done) {
-    return done(null, client._id);
-  });
-  provider.deserializeClient(function(id, done) {
-    models.consumer.findById(id, function (err, client) {
-      return done(err, (client) ? client : false);
-    });
-  });
-
-  // NOTE: Oauthorize is not smart about handling nested routers. We ~MUST~ declare the entire route.
-  router.get('/oauth/authorize',
-    ensureLoggedIn('/auth'),
-    provider.userAuthorization(function (requestToken, done) {
-      models.requestToken.findOne({ identifier: requestToken }).populate('consumer').exec(function (err, token) {
-        if (err) { return done(err); }
-          return done(null, token.consumer, token.callback);
-      });
-    }),
-    function dialog(req, res) {
-      res.render('authorize', { transactionID: req.oauth.transactionID, user: req.user, consumer: req.oauth.client });
-    }
-  );
-  router.post('/oauth/authorize',
-    ensureLoggedIn('/auth'),
-    // TODO: Use Scopes.
-    provider.userDecision(function (requestToken, user, res, done) {
-      var verifier = generateToken(8);
-      // Approve a token.
-      models.requestToken.findOne({ identifier: requestToken }).exec(function (err, token) {
-        if (err) { return done(err); }
-          token.user = user;
-          token.verifier = verifier;
-          token.approved = true;
-          token.save(function (err) {
-            return done(err, verifier);
-        });
-      });
-    })
-  );
-  router.post('/oauth/request_token',
-    // TODO: Security considerations. (Limited Lifetime)
-    passport.authenticate('consumer', { session: false }),
-    provider.requestToken(function (consumer, callbackURL, done) {
-      var token = generateToken(8),
-          secret = generateToken(32);
-      models.requestToken.create({ identifier: token, secret: secret, consumer: consumer, callback: callbackURL },
-        function (err) {
-          if (err) { return done(err); }
-          return done(null, token, secret);
-        });
-      })
-  );
-  router.post('/oauth/access_token',
-    // TODO: Security considerations.
-    passport.authenticate('consumer', { session: false }),
-    provider.accessToken(function (requestToken, verifier, info, done) {
-        return done(null, (verifier === info.verifier) ? true : false);
-      },
-      function (consumer, requestToken, info, done) {
-        if (!info.approved) { return done(null, false); }
-        // Need to cast.
-        if (String(consumer._id) !== String(info.consumer)) { return done(null, false); }
-        var token = generateToken(16),
-            secret = generateToken(64);
-        models.accessToken.create({ identifier: token, secret: secret, user: info.user, consumer: info.consumer },
-          function (err) {
-            if (err) { return done(err); }
-              return done(null, token, secret);
-          }
-        );
-      }
-    )
-  );
-  // Finish up
-  data.httpd.use(router);
   callback(null, router);
 }
 

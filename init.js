@@ -27,6 +27,9 @@ function environment(callback) {
         logger.warn('No $MONGO_URI present. Defaulting to `mongodb://localhost/auth`.');
         process.env.MONGO_URI = 'mongodb://localhost/auth';
     }
+    if (process.env.NODE_TLS_REJECT_UNAUTHORIZED !== 0) {
+        logger.warn('The application set set to reject any non-CA signed Certs. To allow, set NODE_TLS_REJECT_UNAUTHORIZED = 0');
+    }
     return callback(null);
 }
 

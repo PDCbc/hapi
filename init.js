@@ -4,6 +4,14 @@ var async = require('async'),
     _ = require('lodash'),
     logger = require('./lib/logger');
 
+/**
+ * Callback levels:
+ *   - next: Top scope.
+ *   - callback: Second scope.
+ *   - cb: Third scope.
+ *   ... After that, you're on your own.
+ */
+
 async.auto({
     environment:  require('./lib/environment'),
     database:     require('./lib/database'),
@@ -14,6 +22,11 @@ async.auto({
     devroutes:    require('./lib/devroutes'),
 }, complete);
 
+/**
+ * The final completion function. Throws any errors that arise, or listens.
+ * @param  {Error}  error Any errors passed to us via `next(err, null)`` from tasks.
+ * @param  {Object} data  The complete async data object.
+ */
 function complete(error, data) {
     if (error) { logger.error(error); throw error; }
     // No errors

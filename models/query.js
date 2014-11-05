@@ -21,7 +21,7 @@ var schema = Schema({
         type: String,
         required: true
     },
-/**** TODO: Fieran needs to change here because they are not ObjectIDs. ****/
+/**** TODO: 3-001 Fieran needs to change here because they are not ObjectIDs. ****/
     executions: {
         // The set of results for the query.
         type: [{
@@ -30,7 +30,7 @@ var schema = Schema({
         }],
         default: []
     },
-/***** TODO: End of things Fieran nees to change. ****/
+/***** TODO: 3-001 End of things Fieran needs to change. ****/
     /**
      * Things that are interesting to the adapter, but it doesn't require them.
      */
@@ -58,9 +58,9 @@ var schema = Schema({
     // TODO: Any additional info?
 });
 
-/**** TODO: Fieran needs to change to add the method. ****/
+/**** TODO: 3-002 Fieran needs to change to add the method. ****/
 
-/***** TODO: End of things Fieran nees to change. ****/
+/***** TODO: 3-002 End of things Fieran needs to change. ****/
 
 // Define the model.
 module.exports = mongoose.model('Query', schema);

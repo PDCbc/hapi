@@ -42,7 +42,7 @@ var schema = Schema({
         enum: ['complete', 'canceled', 'queued'],
         required: true,
         default: 'queued'
-    },
+    }
 });
 
 // Define the model.

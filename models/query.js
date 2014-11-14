@@ -22,14 +22,17 @@ var schema = Schema({
         required: true
     },
 /**** TODO: 3-001 Fieran needs to change here because they are not ObjectIDs. ****/
-    executions: {
-        // The set of results for the query.
-        type: [{
-            type: ObjectId,
-            ref: 'Result'
-        }],
-        default: []
-    },
+    executions: [
+      {
+        time: Date,
+        notification:String,
+        aggregate_result:{
+          denominator_patients_above_19:Number,
+          numerator_has_recorded_values:Number
+        }
+      }
+    ],
+
 /***** TODO: 3-001 End of things Fieran needs to change. ****/
     /**
      * Things that are interesting to the adapter, but it doesn't require them.

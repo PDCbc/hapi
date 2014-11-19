@@ -55,7 +55,7 @@ var schema = Schema({
     user_id: {
         // The user who wrote the query.
         type: ObjectId,
-        // ref: 'User', //
+        ref: 'User',
         required: false
     }
     // TODO: Any additional info?

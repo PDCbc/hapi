@@ -18,8 +18,16 @@ var schema = Schema({
     },
     value: {
         // The value of the results. This will be a set of key/values.
-        type: Object,
-        required: false // Not present if the result isn't complete.
+          _id: ObjectId,
+          created_at: Date,
+          numerator_has_recorded_values: Number,
+          query_id:
+          {
+              type:ObjectId,
+              ref:'Query',
+              required:true
+          },
+          denominator_patients_above_19: Number
     },
     /**
      * State details.

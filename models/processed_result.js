@@ -32,7 +32,9 @@ processed_result:
         numerator_has_recorded_values:Number
       }
     }
-  ]
+  ],
+  endpoint_id: String,
+  provider_id: String
 }
 
 });

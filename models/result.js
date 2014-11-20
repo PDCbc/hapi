@@ -51,7 +51,8 @@ var schema = Schema({
         required: true,
         default: 'queued'
     }
-});
+}
+);
 
 // Define the model.
 module.exports = mongoose.model('Result', schema);

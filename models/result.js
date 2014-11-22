@@ -20,14 +20,14 @@ var schema = Schema({
         // The value of the results. This will be a set of key/values.
           _id: ObjectId,
           created_at: Date,
-          numerator_has_recorded_values: Number,
+          numerator: Number,
           query_id:
           {
               type:ObjectId,
               ref:'Query',
               required:true
           },
-          denominator_patients_above_19: Number
+          denominator: Number
     },
     /**
      * State details.

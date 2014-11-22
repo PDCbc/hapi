@@ -27,8 +27,8 @@ var schema = Schema({
         time: Date,
         notification:String,
         aggregate_result:{
-          denominator_patients_above_19:Number,
-          numerator_has_recorded_values:Number
+          denominator:Number,
+          numerator:Number
         }
       }
     ],

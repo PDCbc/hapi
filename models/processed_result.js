@@ -12,24 +12,24 @@ processed_result:
   network:[
     { time: Date,
       aggregate_result:{
-        denominator_patients_above_19:Number,
-        numerator_has_recorded_values:Number
+        denominator:Number,
+        numerator:Number
       }
     }
   ],
   clinic:[
     { time: Date,
       aggregate_result:{
-        denominator_patients_above_19:Number,
-        numerator_has_recorded_values:Number
+        denominator:Number,
+        numerator:Number
       }
     }
   ],
   clinician:[
     { time: Date,
       aggregate_result:{
-        denominator_patients_above_19:Number,
-        numerator_has_recorded_values:Number
+        denominator:Number,
+        numerator:Number
       }
     }
   ],

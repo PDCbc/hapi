@@ -33,8 +33,8 @@ processed_result:
       }
     }
   ],
-  endpoint_id: String,
-  provider_id: String
+  endpoint: String,
+  provider: String
 }
 
 });

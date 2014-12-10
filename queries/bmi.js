@@ -61,16 +61,16 @@ function map(patient) {
     //emr_primary_care_provider_id"
     if (population(patient)) {
         emit("denominator", 1);
-        emit("denominator_" + patient['json']['emr_primary_care_provider_id'], 1);
+        emit("denominator_" + patient['json']['primary_care_provider_id'], 1);
         if (hasRecordedValues()) {
             emit("numerator", 1);
-            emit("numerator_" + patient['json']['emr_primary_care_provider_id'], 1);
+            emit("numerator_" + patient['json']['primary_care_provider_id'], 1);
         }
     }
 
     // Empty Case
     emit("numerator", 0);
-    emit("numerator_" + patient['json']['emr_primary_care_provider_id'], 0);
+    emit("numerator_" + patient['json']['primary_care_provider_id'], 0);
     emit("denominator", 0);
-    emit("denominator_" + patient['json']['emr_primary_care_provider_id'], 0);
+    emit("denominator_" + patient['json']['primary_care_provider_id'], 0);
 }

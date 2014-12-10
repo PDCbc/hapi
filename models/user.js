@@ -13,8 +13,12 @@ var schema = Schema({
         unique: true,
         indexed: true
     },
-    password: {
+    encrypted_password: {
         type: String,
+        required: true
+    },
+    admin: {
+        type: Boolean,
         required: true
     }
     // TODO: Add more here.
@@ -23,22 +27,28 @@ var schema = Schema({
 // Hide the password.
 schema.pre('save', function(next) {
     var user = this;
-    if(!user.isModified('password')) return next();
-    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-        if(err) return next(err);
-        bcrypt.hash(user.password, salt, function(err, hash) {
+    if (!user.isModified('encrypted_password')) {
+        return next();
+    } else {
+        bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
             if(err) return next(err);
-            user.password = hash;
-            next();
+            bcrypt.hash(user.encrypted_password, salt, function(err, hash) {
+                if(err) {
+                    return next(err);
+                } else {
+                    user.encrypted_password = hash;
+                    next();
+                }
+            });
         });
-    });
+    }
 });
 
 // Verifies the password is correct.
 schema.methods.comparePassword = function(candidatePassword, callback) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if(err) { return callback(err); }
-        callback(null, isMatch);
+    bcrypt.compare(candidatePassword, this.encrypted_password, function(err, isMatch) {
+        if (err) { return callback(err); }
+        else { callback(null, isMatch); }
     });
 };
 

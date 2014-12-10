@@ -4,6 +4,12 @@ var mongoose = require('mongoose'),
     Mixed = Schema.Types.Mixed;
 
 var schema = Schema({
+    execution_id: {
+        // The endpoint of the query.
+        type: ObjectId,
+        // ref: 'Endpoint', // This isn't mapped for the adapter.
+        required: true
+    },
     endpoint_id: {
         // The endpoint of the query.
         type: ObjectId,

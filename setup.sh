@@ -14,7 +14,7 @@ case $OSTYPE in
 
     Linux) # Linux
         printf "\e[31m -- This script assumes you are using a RHEL/Fedora derivative and is tested on Fedora 20 -- \e[0m\n"
-        apt-get install -y mongodb nodejs npm
+        yum install -y mongodb nodejs npm
         printf "\e[32m -- This scrpt does NOT enable MongoDB. Enable it yourself with \`systemctl enable mongodb\`\n"
         ;;
 

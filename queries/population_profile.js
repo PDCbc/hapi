@@ -28,14 +28,17 @@ function map(patient) {
     
     for(i=0, j=9;i<=90; i+=10,j+=10)
     { 
-      if(i==90)
+      if(i==90 && age>=i)
       {
         emit(gender + '_90+_' + patient.json.primary_care_provider_id, 1);
       }
       else if(age>=i && age<=j)
       {
         emit(gender + '_' + i.toString() + '-' + j.toString() + '_' + patient.json.primary_care_provider_id, 1);
-        break;
+      }
+      else
+      {
+          emit(gender + '_' + i.toString() + '-' + j.toString() + '_' + patient.json.primary_care_provider_id, 0);
       }
     }
     

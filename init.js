@@ -19,7 +19,6 @@ async.auto({
     httpd:        require('./lib/httpd'),
     models:       require('./lib/models'),
     routes:       require('./lib/routes'),
-    devroutes:    require('./lib/devroutes'),
     integrity_routes: require('./lib/integrity_routes'),
     demoprahic_routes: require('./lib/demographic_routes'),
 }, complete);

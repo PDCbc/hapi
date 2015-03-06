@@ -25,7 +25,8 @@
     "mongoose": "~3.8.12",
     "morgan": "~1.5.0",
     "lodash": "~2.4.1",
-    "pem": "~1.4.4"
+    "pem": "~1.4.4",
+    "request": "~2.53.0"
   },
   "jshintConfig": {
     "latedef": "nofunc",

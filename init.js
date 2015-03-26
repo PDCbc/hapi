@@ -17,6 +17,7 @@ async.auto({
     database:     require('./lib/database'),
     certificate:  require('./lib/certificate'),
     httpd:        require('./lib/httpd'),
+    middleware:   require('./lib/middleware'), 
     models:       require('./lib/models'),
     routes:       require('./lib/routes'),
     integrity_routes: require('./lib/integrity_routes'),

@@ -23,6 +23,7 @@ async.auto({
     integrity_routes: require('./lib/integrity_routes'),
     demoprahic_routes: require('./lib/demographic_routes'),
     medclass_routes: require('./lib/medclass_routes'),
+    reports:       require('./lib/reports'),
 }, complete);
 
 /**

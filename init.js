@@ -2,7 +2,7 @@
 
 var async = require('async'),
     _ = require('lodash'),
-    logger = require('./lib/logger');
+    logger = require('./lib/logger').Logger('init', 1);
 
 /**
  * Callback levels:

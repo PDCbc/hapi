@@ -1,33 +1,56 @@
-FROM node
+# Dockerfile for the PDC's HAPI service
+#
+# Base image
+#
+FROM phusion/passenger-nodejs
 
-### Configuration Parameters -- You should set these. ###
 
-# Configure Port
-ENV PORT 8080
-EXPOSE 8080
+# Update system, install Python 2.7
+#
+ENV DEBIAN_FRONTEND noninteractive
+RUN echo 'Dpkg::Options{ "--force-confdef"; "--force-confold" }' \
+      >> /etc/apt/apt.conf.d/local
+RUN apt-get update; \
+    apt-get upgrade -y; \
+    apt-get install -y python2.7
 
-# Configure Secret
-ENV SECRET "Test Secret"
 
-# Configure MONGO_URI
-# mongodb://<domain>/<database>
-ENV MONGO_URI mongodb://hub-db/query_composer_development
+# Create startup script and make it executable
+#
+RUN mkdir -p /etc/service/app/
+RUN ( \
+      echo "#!/bin/bash"; \
+      echo "#"; \
+      echo "set -e -o nounset"; \
+      echo ""; \
+      echo ""; \
+      echo "# Environment variables"; \
+      echo "#"; \
+      echo "export PORT=\${PORT_HAPI}"; \
+      echo "export MONGO_URI=mongodb://hubdb:27017/query_composer_development"; \
+      echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C}"; \
+      echo "export ROLES=\${DACS_ROLEFILE}"; \
+      echo "export SECRET=\${NODE_SECRET}"; \
+      echo ""; \
+      echo ""; \
+      echo "# Start service"; \
+      echo "#"; \
+      echo "cd /app/"; \
+      echo "/sbin/setuser app npm start"; \
+    )  \
+      >> /etc/service/app/run
+RUN chmod +x /etc/service/app/run
 
-# Allow Self Signed SSL Certs
-ENV NODE_TLS_REJECT_UNAUTHORIZED 0
 
-# Git clone and prep
-ADD . /app
-WORKDIR /app
-RUN git clone https://github.com/PhyDaC/hubapi
-WORKDIR /app/hubapi
-
-# Install apps
-RUN apt-get update && apt-get install -y lynx nano && apt-get clean
-
-# Remove any binaries that might have invalid ELF headers
-RUN rm -rf node-modules
+# Prepare /app/ folder
+#
+WORKDIR /app/
+COPY . .
+RUN npm config set python /usr/bin/python2.7
 RUN npm install
+RUN chown -R app:app /app/
 
-# Install Dependencies then start
-CMD ["npm", "start"]
+
+# Run Command
+#
+CMD ["/sbin/my_init"]

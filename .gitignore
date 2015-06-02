@@ -2,5 +2,6 @@
 cert
 .vagrant
 roles
+runme.sh
 
 npm-debug.log

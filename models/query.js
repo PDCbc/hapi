@@ -24,7 +24,7 @@ var schema = Schema({
 /**** TODO: 3-001 Fieran needs to change here because they are not ObjectIDs. ****/
     executions: [
       {
-        time: Date,
+        time: Number,
         notification:String,
         aggregate_result:{
           denominator:Number,

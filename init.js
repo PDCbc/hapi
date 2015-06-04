@@ -2,7 +2,7 @@
 
 var async = require('async'),
     _ = require('lodash'),
-    logger = require('./lib/logger');
+    logger = require('./lib/logger').Logger('init', 1);
 
 /**
  * Callback levels:
@@ -23,6 +23,7 @@ async.auto({
     integrity_routes: require('./lib/integrity_routes'),
     demoprahic_routes: require('./lib/demographic_routes'),
     medclass_routes: require('./lib/medclass_routes'),
+    report_routes:       require('./lib/report_routes'),
 }, complete);
 
 /**

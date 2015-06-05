@@ -31,6 +31,7 @@ RUN ( \
       echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C}"; \
       echo "export ROLES=\${DACS_ROLEFILE}"; \
       echo "export SECRET=\${NODE_SECRET}"; \
+      echo "export DCLAPI_URI=\${URL_DCLAPI}"; \
       echo ""; \
       echo ""; \
       echo "# Start service"; \

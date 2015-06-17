@@ -11,26 +11,26 @@ The hubapi component acts as a data access and processing layer around the mongo
         *  it must be accessible via: `request.query.cookie`
     + During normal execution, the route will return a JSON string/object of the following structure: 
 
-    ```JSON
+    ```JavaScript
     { 
-        processed_result : { 
-            clinician : [
-                { aggregate_result : { numerator : INT , denominator : INT }, time: TIMESTAMP, display_name : STRING },
+        "processed_result" : { 
+            "clinician" : [
+                { "aggregate_result" : { "numerator" : INT , "denominator" : INT }, "time": TIMESTAMP, "display_name" : STRING },
                 ... 
             ], 
-            group : [
-                { aggregate_result : { numerator : INT , denominator : INT }, time: TIMESTAMP, display_name : STRING },
+            "group" : [
+                { "aggregate_result" : { "numerator" : INT , "denominator" : INT }, "time": TIMESTAMP, "display_name" : STRING },
                 ... 
             ],
-            network : [
-                { aggregate_result : { numerator : INT , denominator : INT }, time: TIMESTAMP, display_name : STRING },
+            "network" : [
+                { "aggregate_result" : { "numerator" : INT , "denominator" : INT }, "time": TIMESTAMP, "display_name" : STRING },
                 ... 
             ],
         }, 
-        provider_id : STRING, 
-        network_id : STRING,
-        title : STRING, 
-        description : STRING 
+        "provider_id" : STRING, 
+        "network_id" : STRING,
+        "title" : STRING, 
+        "description" : STRING 
     }
     ```
     + The status codes are as follows, in the event of an error code (status > 399) or no content (status == 204) the data object will be `null` or an empty object `{}` : 
@@ -46,10 +46,10 @@ The hubapi component acts as a data access and processing layer around the mongo
     + This route requires that cookie be provided that is accessible via the Node Express: `request.query.cookie` object.
     + During normal operation, the route will return a JSON string of the following format: 
 
-    ```JSON
+    ```JavaScript
     {
-        queries : [
-            { _id : STRING, title : STRING, user_id : STRING, description : STRING, executions : [ ... ] },
+        "queries" : [
+            { "_id" : STRING, "title" : STRING, "user_id" : STRING, "description" : STRING, "executions" : [ ... ] },
             ... 
         ]
     }
@@ -68,9 +68,9 @@ The hubapi component acts as a data access and processing layer around the mongo
     + This report requires that a cookie be passed via the request GET query string, it must be accessible via Express' `request.query.cookie` object. The cookie must contain user information and will be used to authenticate the user.
     + During normal (non-error) operation, the following object structure will be returned: 
 
-    ```JSON
+    ```JavaScript
     [
-        { shortTitle : STRING ,title : STRING},
+        { "shortTitle" : STRING, "title" : STRING},
         ...
     ]
     ```
@@ -98,7 +98,7 @@ The hubapi component acts as a data access and processing layer around the mongo
     + The route requires that user information be in a cookie sent via the GET query string.
     + Under normal operation (non-error, status code 200) the route will return the following JSON string as a response:
     
-    ```JSON
+    ```JavaScript
     {
         provider_id : STRING
         processed_result : {

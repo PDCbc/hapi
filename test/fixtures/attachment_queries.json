@@ -1,0 +1,135 @@
+{
+  "_id": {
+    "$oid": "55887a3aadf722c9e61f5c4e"
+  },
+  "title": "PDC-1738",
+  "_type": "Query",
+  "user_id": {
+    "$oid": "5575e2bcecc133629d9d86b9"
+  },
+  "description": "PDC-1738_active-patients",
+  "reduce": "function reduce(key, values){return Array.sum(values);}",
+  "map": "/**\n * Query Title: PDC-1738\n * Query Type:  Ratio\n * Description: The ratio of active to inactive patients.\n */\nfunction map( patient ){\n\n  var denominator = true; \n\n  var numerator = denominator && activePatient( patient ); \n\n  emit( \"denominator_\" + patient.json.primary_care_provider_id,  + denominator );\n\n  emit( \"numerator_\" + patient.json.primary_care_provider_id, + numerator   );\n  \n}",
+  "__v": 0,
+  "executions": [
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1420143132,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 10,
+        "denominator_cpsid2": 20,
+        "denominator_cpsid3": 30,
+        "denominator_cpsid4": 40,
+        "numerator_cpsid": 8,
+        "numerator_cpsid2": 16,
+        "numerator_cpsid3": 24,
+        "numerator_cpsid4": 32
+      }
+    },
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1421352732,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 10,
+        "denominator_cpsid2": 20,
+        "denominator_cpsid3": 30,
+        "denominator_cpsid4": 40,
+        "numerator_cpsid": 8,
+        "numerator_cpsid2": 16,
+        "numerator_cpsid3": 24,
+        "numerator_cpsid4": 32
+      }
+    },
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1422821532,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 11,
+        "denominator_cpsid2": 21,
+        "denominator_cpsid3": 31,
+        "denominator_cpsid4": 40,
+        "numerator_cpsid": 9,
+        "numerator_cpsid2": 17,
+        "numerator_cpsid3": 25,
+        "numerator_cpsid4": 32
+      }
+    },
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1424031132,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 15,
+        "denominator_cpsid2": 22,
+        "denominator_cpsid3": 32,
+        "denominator_cpsid4": 41,
+        "numerator_cpsid": 13,
+        "numerator_cpsid2": 18,
+        "numerator_cpsid3": 26,
+        "numerator_cpsid4": 33
+      }
+    },
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1425240732,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 15,
+        "denominator_cpsid2": 22,
+        "denominator_cpsid3": 32,
+        "denominator_cpsid4": 41,
+        "numerator_cpsid": 13,
+        "numerator_cpsid2": 18,
+        "numerator_cpsid3": 26,
+        "numerator_cpsid4": 33
+      }
+    },
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1426446732,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 15,
+        "denominator_cpsid2": 22,
+        "denominator_cpsid3": 32,
+        "denominator_cpsid4": 41,
+        "numerator_cpsid": 13,
+        "numerator_cpsid2": 18,
+        "numerator_cpsid3": 26,
+        "numerator_cpsid4": 33
+      }
+    },
+    {
+      "_id": {
+        "$oid": "55887a4f526153a979000001"
+      },
+      "time": 1427915532,
+      "notification": null,
+      "aggregate_result": {
+        "denominator_cpsid": 15,
+        "denominator_cpsid2": 22,
+        "denominator_cpsid3": 32,
+        "denominator_cpsid4": 41,
+        "numerator_cpsid": 13,
+        "numerator_cpsid2": 18,
+        "numerator_cpsid3": 26,
+        "numerator_cpsid4": 33
+      }
+    }
+  ]
+}

@@ -3,6 +3,45 @@
 
 The hubapi component acts as a data access and processing layer around the mongodb. It has the following routes of interest: 
 
+
+- `GET /retro/:title`
+    + This route will return a JSON object that contains data for the query identified by `:title`.
+    + This route is used for *ratio* type queries.
+    + It will return data that is almost identical to the `/api/processed_result` route, the only difference being that it look for many executions over time instead of just the most recent.
+    + This route requires that cookie be passed via the query string of the URL
+        *  it must be accessible via: `request.query.cookie`
+    + During normal execution, the route will return a JSON string/object of the following structure: 
+
+    ```JavaScript
+    { 
+        "processed_result" : { 
+            "clinician" : [
+                { "aggregate_result" : { "numerator" : INT , "denominator" : INT }, "time": TIMESTAMP, "display_name" : STRING },
+                ... 
+            ], 
+            "group" : [
+                { "aggregate_result" : { "numerator" : INT , "denominator" : INT }, "time": TIMESTAMP, "display_name" : STRING },
+                ... 
+            ],
+            "network" : [
+                { "aggregate_result" : { "numerator" : INT , "denominator" : INT }, "time": TIMESTAMP, "display_name" : STRING },
+                ... 
+            ],
+        }, 
+        "provider_id" : STRING, 
+        "network_id" : STRING,
+        "title" : STRING, 
+        "description" : STRING 
+    }
+    ```
+    + The status codes are as follows, in the event of an error code (status > 399) or no content (status == 204) the data object will be `null` or an empty object `{}` : 
+        * `200` - Processing completed successfully, the resulting data will be in the returned object. 
+        * `204` - The request was correctly processed, but no executions for this query exist!
+        * `400` - Request for data was not well formed, i.e. there was not `request.body.bakedCookie` field
+        * `404` - The query requested does not exist
+        * `401` - Request failed due to invalid credential
+        * `500` - Request failed due to unknown server error. 
+
 - `GET /api/processed_result/:title`
     + Returns data for the query identified by the `:title` input
     + This route is used for *ratio* type queries.
@@ -131,6 +170,7 @@ The hubapi component acts as a data access and processing layer around the mongo
         * `401` - The request failed to authenticate via the auth component, i.e. the cookie was invalid
         * `404` - The requested query does not exist.
         * `500` - Server error occurred.
+
 
 # Tests
 

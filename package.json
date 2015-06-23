@@ -5,7 +5,7 @@
   "main": "init.js",
   "scripts": {
     "start": "node init.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive"
   },
   "author": "Andrew Hobden <andrew+scoop@hoverbear.org>, Ryan Habibi <rphabibi@uvic.ca>",
   "license": "GPLv2",

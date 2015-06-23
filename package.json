@@ -5,7 +5,9 @@
   "main": "init.js",
   "scripts": {
     "start": "node init.js",
-    "test": "sh runtest.sh"
+    "test": "sh runtest.sh",
+    "test-coverage" : "mocha -c --recursive --require blanket -R html-cov > coverage.html",
+    "test-no-coverage" : "mocha -c --recursive" 
   },
   "config": {
     "blanket": {

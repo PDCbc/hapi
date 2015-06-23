@@ -30,6 +30,27 @@ describe('ResultManager', function(){
 
         proc = {}
 
+        testGroups = [
+
+            {
+                name:'test1',
+                members:['cpsid1','cpsid2', 'cpsid3', 'cpsid']
+            },{
+                name:'test2',
+                members:['cpsid4']
+            },{
+                name: "test3",
+                members : []
+            },{
+                name : "test4",
+                members : ['cpsid10'] //this combined with group test5 create a case where the 
+                                      //id cpsid10 is in the same group.
+            },{
+                name : "test5",
+                members : ['cpsid10', 'cpsid11']
+            }
+
+        ]
 
         testData = {
 
@@ -40,7 +61,9 @@ describe('ResultManager', function(){
                 "denominator_cpsid1" : 2,
                 "numerator_cpsid1" : 1,
                 "numerator_cpsid4" : 10,
-                "denominator_cpsid4" : 20 
+                "denominator_cpsid4" : 20,
+                "numerator_cpsid11" : 10,
+                "denominator_cpsid11" : 20 
 
             }
 
@@ -52,6 +75,8 @@ describe('ResultManager', function(){
 
         proc.createDataObjectFromSplit = createDataObjectFromSplit; 
 
+        proc.groups.setData(testGroups);
+
         done(); 
 
     });
@@ -60,6 +85,7 @@ describe('ResultManager', function(){
 
         proc.regexString                = null;
         proc.createDataObjectFromSplit  = null; 
+        proc.groups                     = null; 
         proc                            = null; 
         rm                              = null; 
 
@@ -72,7 +98,7 @@ describe('ResultManager', function(){
 
            var result = proc.getData(); 
 
-            assert.equal(result.length, 6);
+            assert.equal(result.length, 8);
 
             assert.equal(result[0].field, 'denominator');
             assert.equal(result[0].clinician, 'cpsid');
@@ -114,7 +140,7 @@ describe('ResultManager', function(){
 
             done();
 
-        })
+        });
 
     });
 
@@ -124,7 +150,7 @@ describe('ResultManager', function(){
 
             var result = rm.getNetwork(); 
 
-            assert.equal(result.length, 6);
+            assert.equal(result.length, 8);
 
             done(); 
 
@@ -150,5 +176,22 @@ describe('ResultManager', function(){
 
     });
 
+    describe('#getSelf()', function(){
+
+        it('should return 1 provider with their data', function(done){
+
+            var result = rm.getSelf(); 
+
+            assert.equal(result.length, 2);
+            assert.equal(result[0].clinician, 'cpsid');
+            assert.equal(result[1].clinician, 'cpsid');
+            assert.equal(result[0].count, 5);
+            assert.equal(result[1].count, 4);
+
+            done();
+
+        });
+
+    });
      
 });

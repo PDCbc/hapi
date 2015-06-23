@@ -191,8 +191,8 @@ describe('groups', function(){
 
         it('should return null for id "notAnId"', function(done){
 
-            var result = groups.findGroup('cpsid');
-            assert.equal(result, "test1");
+            var result = groups.findGroup('notAnId');
+            assert.equal(result, null);
             done();
 
         });
@@ -207,6 +207,66 @@ describe('groups', function(){
             done();
 
         });
+
+    });
+
+    describe("#getMembers()", function(){
+
+        it('should return array of ids for group test1', function(done){
+
+            var result = groups.getMembers("test1");
+            assert.deepEqual(result, ['cpsid1','cpsid2', 'cpsid3', 'cpsid']);
+            done();
+
+        });
+
+        it('should return empty array since no groupName parameter is null', function(done){
+
+            var result = groups.getMembers(null);
+            assert.deepEqual(result, []);
+            done();
+            
+        });
+
+        it('should return empty array since group test3 has no members', function(done){
+
+            var result = groups.getMembers('test3');
+            assert.deepEqual(result, []);
+            done();
+
+        });
+
+        it('should return empty array if an unknown group is given', function(done){
+
+            var result = groups.getMembers('definitelyNotAGroupName');
+            assert.deepEqual(result, []);
+            done();
+        });
+
+    });
+            
+    describe("#setData()", function(){
+
+        it('should return without changing the group data if data parameter is null', function(done){
+
+            var result = groups.setData(null);
+            assert.equal(undefined, result);
+            assert.equal(groups.getData()[0].name, 'test1');
+            done();
+
+
+        });
+
+        it('should return without changing the group data if data parameter is null', function(done){
+
+            var result = groups.setData(null);
+            assert.equal(undefined, result);
+            assert.equal(groups.getGroups()[0].name, 'test1');
+            done();
+
+
+        });
+
 
     });
 });

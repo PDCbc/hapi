@@ -1,6 +1,5 @@
-# Setup
 
-## API
+# API
 
 The hubapi component acts as a data access and processing layer around the mongodb. It has the following routes of interest: 
 
@@ -133,6 +132,20 @@ The hubapi component acts as a data access and processing layer around the mongo
         * `404` - The requested query does not exist.
         * `500` - Server error occurred.
 
+# Tests
+
+## Unit Tests
+
+Unit tests reside in the `test/` directory. They are using the [MochaJs](http://mochajs.org/) unit test framework. Code coverage is provided by [Blanket](https://github.com/alex-seville/blanket) The directory is structured to mirror the `lib/` directory, please keep it organized! To run tests use the following: 
+
+`npm test` - this runs a suite of mocha tests and a code coverage by running `sh runtests.sh`.
+
+Alternatively, code coverage can be run independently of the regular mocha reporter: `npm run test-coverage` and tests can be run without coverage: `npm run test-no-coverage`.  
+
+Note: the coverage and normal coverage unit tests are coupled together in `npm test` because the mocha does not currently support multiple reporter types (html-cov AND command line) at the same time.  
+
+# Setup
+
 ## Dependencies
 
 Before starting, you should ensure you have the following available on your machine:
@@ -162,6 +175,20 @@ cd $PROJECT_DIRECTORY
 npm install # Install Dependencies into `.node_modules/`.
 npm start   # Start the application.
 ```
+
+### Starting for Development
+
+During development it can desirable to set URLs of other components (MongoDB, Visualizer, Auth, DCLAPI etc...)
+to something other than default. Do this by setting environment variables for the process, for example: 
+
+```bash
+MONGO_URI=mongodb://localhost:27019/query_composer_development AUTH_CONTROL=https://localhost:3006 DCLAPI_URI=http://localhost:3007 npm start
+```
+
+Note that the components at the URLs given must be running, if you are having issues consider the following:
+    - Are all the right ports open on the various machines?
+    - Are you on the right network?
+    - Is the host you are trying to connect to reachable?
 
 # Deploy
 

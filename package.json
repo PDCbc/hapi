@@ -5,7 +5,13 @@
   "main": "init.js",
   "scripts": {
     "start": "node init.js",
-    "test": "mocha --recursive"
+    "test": "sh runtest.sh"
+  },
+  "config": {
+    "blanket": {
+      "pattern": ["lib", "lib/reports", "lib/resultManager", "lib/routes"],
+      "data-cover-never" : [ "node_modules", "test"]
+    }
   },
   "author": "Andrew Hobden <andrew+scoop@hoverbear.org>, Ryan Habibi <rphabibi@uvic.ca>",
   "license": "GPLv2",
@@ -13,6 +19,7 @@
   "dependencies": {
     "async": "~0.9.0",
     "bcrypt": "~0.8.0",
+    "blanket": "^1.1.7",
     "body-parser": "~1.10.0",
     "cli-color": "~0.3.2",
     "compression": "~1.2.2",

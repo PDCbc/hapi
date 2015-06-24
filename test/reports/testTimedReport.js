@@ -195,5 +195,217 @@ describe('TimedReport', function(){
 
     });
 
+    describe("#findNextTimedExecution()", function(){
+
+        it("should return null if there is no time field in the execution object", function(done){
+
+            var all = [{time: 1}, {time: 2}];
+            var current = { notTime : 1};
+
+            var r = proc.findNextTimedExecution(current, all, 10, 10);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if there is non-number input for timeFrame parameter", function(done){
+
+            var all = [{time: 1}, {time: 2}];
+            var current = { time : 1};
+
+            var r = proc.findNextTimedExecution(current, all, "SOME STRING", 10);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if there is non-number input for threshold parameter", function(done){
+
+            var all = [{time: 1}, {time: 2}];
+            var current = { time : 1};
+
+            var r = proc.findNextTimedExecution(current, all, 10, "STRING");
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if the allExes parameter is an empty array", function(done){
+
+            var all = [];
+            var current = { time : 1};
+
+            var r = proc.findNextTimedExecution(current, all, 10, 10);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if nothing in allExes has a time field", function(done){
+
+            var all = [{notTime : 1}, {notTime : 2}];
+            var current = { time : 1};
+
+            var r = proc.findNextTimedExecution(current, all, 10, 10);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if executions in allExes are before the current one", function(done){
+
+            var all = [{time : 2}, {time : 1}];
+            var current = { time : 3};
+
+            var r = proc.findNextTimedExecution(current, all, 10, 10);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if executions in allExes are before or equal to the current one", function(done){
+
+            var all = [{time : 4}, {time : 2}];
+            var current = { time : 4};
+
+            var r = proc.findNextTimedExecution(current, all, 10, 10);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return one object if the times are exactly timeFrame apart", function(done){
+
+            var all = [{time : 10}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 0);
+
+            assert.deepEqual(r, {time : 10} );
+
+            done();
+
+        });
+
+        it("should return one object if the times are exactly within timeFrame and threshold", function(done){
+
+            var all = [{time : 10}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 1);
+
+            assert.deepEqual(r, {time : 10} );
+
+            done();
+
+        });
+
+        it("should return one object if the times are on the upper edge of the timeFrame and threshold", function(done){
+
+            var all = [{time : 11}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 1);
+
+            assert.deepEqual(r, {time : 11} );
+
+            done();
+
+        });
+
+        it("should return one object if the times are on the lower edge of the timeFrame and threshold", function(done){
+
+            var all = [{time : 9}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 1);
+
+            assert.deepEqual(r, {time : 9} );
+
+            done();
+
+        });
+
+        it("should exclude objects that are obviously outside (lower) the timeFrame and threshold", function(done){
+
+            var all = [{time : 8}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 1);
+
+            assert.deepEqual(r, null);
+
+            done();
+
+        });
+
+
+        it("should exclude objects that are obviously outside (upper) the timeFrame and threshold", function(done){
+
+            var all = [{time : 12}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 1);
+
+            assert.deepEqual(r, null);
+
+            done();
+
+        });
+
+        it("should return the closest object to the timeFrame if multiple executions are within the timeFrame+threshold", function(done){
+
+            var all = [{time : 12}, {time : 10}, {time: 8}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 3);
+
+            assert.deepEqual(r, {time : 10});
+
+            done();
+
+        });
+
+        it("should return the closest object to the timeFrame (off-center) if multiple executions are within the timeFrame+threshold", function(done){
+
+            var all = [{time : 12}, {time : 11}, {time: 8}];
+            var current = { time : 5};
+
+            var r = proc.findNextTimedExecution(current, all, 5, 3);
+
+            assert.deepEqual(r, {time : 11});
+
+            done();
+
+        });
+
+        it("test real world data", function(done){
+
+            var all = [{time : 1420143132}, {time : 1421352732}, {time: 1422821532}, {time : 1425240732}];
+            var current = { time : 1420143132};
+
+            var r = proc.findNextTimedExecution(current, all, null, null); //using defaults from timeFrame and threshold
+
+            assert.deepEqual(r, {time : 1422821532});
+
+            done();
+
+        });
+    });
+
 
 });

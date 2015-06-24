@@ -407,5 +407,82 @@ describe('TimedReport', function(){
         });
     });
 
+    describe("#getExecutionsSeperatedByOneMonth()", function(){
+
+        it("should return null if null start parameter is provided", function(done){
+
+            var exes = [{}, {}];
+
+            var r = proc.getExecutionsSeparatedByOneMonth(null, exes);
+
+            assert.equal(r, null);
+
+            done();
+        });
+
+        it("should return null if null exes parameter is provided", function(done){
+
+            var exes = [{}, {}];
+
+            var r = proc.getExecutionsSeparatedByOneMonth({time : 1}, null);
+
+            assert.equal(r, null);
+
+            done();
+        });
+
+        it("should return null if start without time is provided", function(done){
+
+            var exes = [{}, {}];
+            var start = {notTime : 1};
+
+            var r = proc.getExecutionsSeparatedByOneMonth(start, exes);
+
+            assert.equal(r, null);
+
+            done();
+        });
+
+        it("should return null if empty exes array is provided.", function(done){
+
+            var exes = [];
+            var start = {time : 1};
+
+            var r = proc.getExecutionsSeparatedByOneMonth(start, exes);
+
+            assert.equal(r, null);
+
+            done();
+        });
+
+
+        it("should return null if the start object is the only value in the array", function(done){
+
+            var exes = [{time : 1}];
+            var start = {time : 1};
+
+            var r = proc.getExecutionsSeparatedByOneMonth(start, exes);
+
+            assert.equal(r, null);
+
+            done();
+        });
+
+        it("should array with three elements if tested with normal data.", function(done){
+
+            var all = [{time : 1420143132}, {time : 1421352732}, {time: 1422821532}, {time : 1425240732}];
+            var current = { time : 1420143132};
+
+            var r = proc.getExecutionsSeparatedByOneMonth(current, all);
+
+            assert.equal(r.length, 3);
+            assert.equal(r[0].time,1420143132);
+            assert.equal(r[1].time,1422821532);
+            assert.equal(r[2].time,1425240732);
+
+            done();
+        });
+
+    });
 
 });

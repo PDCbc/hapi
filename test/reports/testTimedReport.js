@@ -468,7 +468,7 @@ describe('TimedReport', function(){
             done();
         });
 
-        it("should array with three elements if tested with normal data.", function(done){
+        it("should return array with three elements if tested with normal data.", function(done){
 
             var all = [{time : 1420143132}, {time : 1421352732}, {time: 1422821532}, {time : 1425240732}];
             var current = { time : 1420143132};
@@ -483,6 +483,155 @@ describe('TimedReport', function(){
             done();
         });
 
+        it("should return array with three elements for data with mixed valid and null objects.", function(done){
+
+            var all = [{time : 1420143132}, {time : 1421352732}, {time: 1422821532}, {time: "string"}, {notTime : 1}, {time : 1425240732}];
+            var current = { time : 1420143132};
+
+            var r = proc.getExecutionsSeparatedByOneMonth(current, all);
+
+            assert.equal(r.length, 3);
+            assert.equal(r[0].time,1420143132);
+            assert.equal(r[1].time,1422821532);
+            assert.equal(r[2].time,1425240732);
+
+            done();
+        });
+
+    });
+
+    describe("#getOldestExecutionOnDay()", function() {
+
+        it("should return null if the exes parameter is null ", function(done){
+
+            var r = proc.getOldestExecutionOnDay(null, 1);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if the exes parameter is empty array ", function(done){
+
+            var r = proc.getOldestExecutionOnDay([], 1);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if the dayNum parameter is null  ", function(done){
+
+            var r = proc.getOldestExecutionOnDay([{}], null);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if the dayNum parameter is negative  ", function(done){
+
+            var r = proc.getOldestExecutionOnDay([{}], -1);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if the dayNum parameter is greater than 31  ", function(done){
+
+            var r = proc.getOldestExecutionOnDay([{}], 32);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null if none of executions have a dayNum day of month", function(done){
+
+            var exes = [
+
+                {time : 1435172289 }, //June 24 2015
+                {time : 1434394681 }, //June 15 2015
+                {time : 1431716281 }, //May 15 2015
+                {time : 1430593081 }, //May 2 2015
+                {time : 1433098681 } //May 31 2015
+
+            ];
+
+            var r = proc.getOldestExecutionOnDay(exes, 1);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return an object if one of time stamps is on 1st of month", function(done){
+
+            var exes = [
+
+                {time : 1435172289 }, //June 24 2015
+                {time : 1434394681 }, //June 15 2015
+                {time : 1431716281 }, //May 15 2015
+                {time : 1430593081 }, //May 2 2015
+                {time : 1430506681 } //May 1 2015
+
+            ];
+
+            var r = proc.getOldestExecutionOnDay(exes, 1);
+
+            assert.deepEqual(r, {time : 1430506681 } );
+
+            done();
+
+        });
+
+        it("should return the earlier execution if two occured on the first of some month(s)", function(done){
+
+            var exes = [
+
+                {time : 1435172289 }, //June 24 2015
+                {time : 1434394681 }, //June 15 2015
+                {time : 1431716281 }, //May 15 2015
+                {time : 1430593081 }, //May 2 2015
+                {time : 1430506681 }, //May 1 2015
+                {time : 1433185081 } //June 1 2015
+
+            ];
+
+            var r = proc.getOldestExecutionOnDay(exes, 1);
+
+            assert.deepEqual(r, {time : 1430506681 } );
+
+            done();
+
+        });
+
+        it("should return a valid object if it exists even if there are invalid input objects", function(done){
+
+            var exes = [
+
+                {time : 1430506681 }, //May 1 2015
+                {time : 1435172289 }, //June 24 2015
+                {notTime : 1434394681 }, //June 15 2015
+                {time : null }, //May 15 2015
+                {time : "some string" } //May 2 2015
+
+            ];
+
+            var r = proc.getOldestExecutionOnDay(exes, 1);
+
+            assert.deepEqual(r, {time : 1430506681 } );
+
+            done();
+
+        });
     });
 
 });

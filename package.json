@@ -7,7 +7,8 @@
     "start": "node init.js",
     "test": "sh runtest.sh",
     "test-coverage" : "mocha -c --recursive --require blanket -R html-cov > coverage.html",
-    "test-no-coverage" : "mocha -c --recursive" 
+    "test-no-coverage" : "mocha -c --recursive",
+    "gen-docs" : "jsdoc -r ./lib -d doc/jsDoc; open doc/jsDoc/index.html" 
   },
   "config": {
     "blanket": {

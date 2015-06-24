@@ -6,3 +6,4 @@ roles
 runme.sh
 coverage.html
 npm-debug.log
+doc/jsDoc/*

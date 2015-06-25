@@ -1,5 +1,4 @@
 var assert = require('assert');
-require('blanket');
 var groups = require('../lib/groups.js');
 
 describe('groups', function(){

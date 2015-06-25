@@ -5,16 +5,8 @@
   "main": "init.js",
   "scripts": {
     "start": "node init.js",
-    "test": "sh runtest.sh",
-    "test-coverage" : "mocha -c --recursive --require blanket -R html-cov > coverage.html",
-    "test-no-coverage" : "mocha -c --recursive",
+    "test": "istanbul cover _mocha -- --recursive -R spec",
     "gen-docs" : "jsdoc -r ./lib -d doc/jsDoc; open doc/jsDoc/index.html" 
-  },
-  "config": {
-    "blanket": {
-      "pattern": ["lib", "lib/reports", "lib/resultManager", "lib/routes"],
-      "data-cover-never" : [ "node_modules", "test"]
-    }
   },
   "author": "Andrew Hobden <andrew+scoop@hoverbear.org>, Ryan Habibi <rphabibi@uvic.ca>",
   "license": "GPLv2",

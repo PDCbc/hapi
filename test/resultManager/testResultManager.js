@@ -193,5 +193,17 @@ describe('ResultManager', function(){
         });
 
     });
+
+    describe("#createDataObjectFromSplit()", function(){
+
+        it("should throw an error since this is not implemented.", function(done){
+
+            assert.throws(proc.createDataObjectFromSplit);
+
+            done();
+
+        });
+
+    });
      
 });

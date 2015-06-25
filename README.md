@@ -79,6 +79,29 @@ The hubapi component acts as a data access and processing layer around the mongo
         * `401` - Request failed due to invalid credential
         * `500` - Request failed due to unknown server error. 
 
+- `GET /demographics`
+    + Returns data for the demographics query. 
+    + This route requires that cookie be passed via the query string of the URL
+        *  it must be accessible via: `request.query.cookie`
+    + During normal execution, the route will return a JSON string/object of the following structure: 
+    + Returns data for **single** (most recent) execution. For all executions see `/retro/demographics` route. 
+
+    ```JavaScript
+    { 
+        "clinician" : [ { "gender" : { "age-range" : NUMBER, ... }, ... } ],
+        "group" : [ { "gender" : { "age-range" : NUMBER, ... }, ... } ],
+        "network" : [ { "gender" : { "age-range" : NUMBER, ... }, ... } ],
+        "provider_id" : STRING
+    }
+    ```
+    + The status codes are as follows, in the event of an error code (status > 399) or no content (status == 204) the data object will be `null` or an empty object `{}` : 
+        * `200` - Processing completed successfully, the resulting data will be in the returned object. 
+        * `204` - The request was correctly processed, but no executions for this query exist!
+        * `400` - Request for data was not well formed, i.e. there was not `request.body.bakedCookie` field
+        * `404` - The query requested does not exist
+        * `401` - Request failed due to invalid credential
+        * `500` - Request failed due to unknown server error. 
+
 - `GET /api/queries`
     + Returns a list of all of the queries and their executions 
     + This route requires that cookie be provided that is accessible via the Node Express: `request.query.cookie` object.

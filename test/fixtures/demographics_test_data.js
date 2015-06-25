@@ -149,7 +149,7 @@ module.exports.expectedOutput = {
                 "90+": 0
             },
             "undefined": {
-                "0-9": 1,
+                "0-9": 2,
                 "10-19": 0,
                 "20-29": 0,
                 "30-39": 0,
@@ -253,7 +253,7 @@ module.exports.expectedOutput = {
                 "90+": 0
             },
             "undefined": {
-                "0-9": 2,
+                "0-9": 3,
                 "10-19": 0,
                 "20-29": 0,
                 "30-39": 0,
@@ -350,7 +350,7 @@ module.exports.inputData = {
                 "male_90+_cpsid": 1,
 
 
-                "undefined_0-9_cpsid": 0,
+                "undefined_0-9_cpsid": 1,
                 "undefined_10-19_cpsid": 0,
                 "undefined_20-29_cpsid": 0,
                 "undefined_30-39_cpsid": 0,

@@ -1,11 +1,11 @@
 var assert                    = require("assert");
-var testData = require('../fixtures/demographics_test_data.js');
 var DemographicsResultManager = require('../../lib/resultManager/DemographicsResultManager.js').DemographicsResultManager;
-var logger   = require('../../lib/logger.js').Logger("testDemographicsResultManager", 1);
+var logger = require('../../lib/logger.js').Logger("testDemographicsResultManager", 1);
 
-var rm       = null;
-var proc     = null;
-
+var rm         = null;
+var proc       = null;
+var testData   = null;
+var testGroups = null;
 
 describe('DemographicsResultManager', function () {
 
@@ -13,7 +13,23 @@ describe('DemographicsResultManager', function () {
 
         proc = {};
 
+        testGroups = [
+
+            {
+                name   : 'test1',
+                members: ['cpsid', 'cpsid2']
+            }, {
+                name   : 'test2',
+                members: ['cpsid4']
+            }
+
+        ];
+
+        testData = require('../fixtures/demographics_test_data.js');
+
         rm = DemographicsResultManager("cpsid", testData.inputData.executions[0], proc);
+
+        proc.groups.setData(testGroups);
 
         done();
 
@@ -26,6 +42,7 @@ describe('DemographicsResultManager', function () {
         proc.groups                    = null;
         proc                           = null;
         rm                             = null;
+        testData = null;
 
         done();
 
@@ -207,10 +224,25 @@ describe('DemographicsResultManager', function () {
         });
 
 
-        it("test execution function", function (done) {
+        it("should return a result on normal input", function (done) {
 
-            // var r = proc.generateResult();
+            var r = proc.generateResult();
 
+            assert.deepEqual(r.clinician[0], require('../fixtures/demographics_test_data.js').expectedOutput.clinician[0]);
+            assert.deepEqual(r.group[0], require('../fixtures/demographics_test_data.js').expectedOutput.group[0]);
+            assert.deepEqual(r.network[0], require('../fixtures/demographics_test_data.js').expectedOutput.network[0]);
+
+            done();
+
+        });
+
+        it("should return null if there is no time field in the input data.", function (done) {
+
+            delete proc.data.time;
+
+            var r = proc.generateResult();
+
+            assert.equal(r, null);
 
             done();
 
@@ -247,6 +279,7 @@ describe('DemographicsResultManager', function () {
             assert.equal(r, null);
 
             done();
+
         });
 
         it("should return null if the input contains only invalid gender types", function (done) {

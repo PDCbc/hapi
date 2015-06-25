@@ -1,8 +1,9 @@
 var assert                    = require("assert");
+var testData = require('../fixtures/demographics_test_data.js');
 var DemographicsResultManager = require('../../lib/resultManager/DemographicsResultManager.js').DemographicsResultManager;
+var logger   = require('../../lib/logger.js').Logger("testDemographicsResultManager", 1);
 
 var rm       = null;
-var testData = null;
 var proc     = null;
 
 
@@ -12,7 +13,7 @@ describe('DemographicsResultManager', function () {
 
         proc = {};
 
-        rm = DemographicsResultManager("cpsid", testData, proc);
+        rm = DemographicsResultManager("cpsid", testData.inputData.executions[0], proc);
 
         done();
 
@@ -184,6 +185,174 @@ describe('DemographicsResultManager', function () {
         it("should return null for an input that is not an array", function (done) {
 
             assert.equal(proc.createDataObjectFromSplit({notAnArray: 1}), null);
+
+            done();
+
+        });
+
+    });
+
+    describe("#generateResult()", function () {
+
+        beforeEach(function (done) {
+
+            done();
+
+        });
+
+        afterEach(function (done) {
+
+            done();
+
+        });
+
+
+        it("test execution function", function (done) {
+
+            // var r = proc.generateResult();
+
+
+            done();
+
+        });
+
+    });
+
+    describe("#combineByGender()", function () {
+
+        it("should return null for null input type", function (done) {
+
+            var r = proc.combineByGender(null);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null for non-array input type", function (done) {
+
+            var r = proc.combineByGender({notAnArray: 1});
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return null for an array of length 0", function (done) {
+
+            var r = proc.combineByGender([]);
+
+            assert.equal(r, null);
+
+            done();
+        });
+
+        it("should return null if the input contains only invalid gender types", function (done) {
+
+            var d = [{gender: "NoAValidGenderType", lowerAge: 0, upperAge: 1, count: 1}];
+
+            var r = proc.combineByGender(d);
+
+            assert.equal(r, null);
+
+            done();
+
+        });
+
+        it("should return lowerAge+ if upperAge is null", function (done) {
+
+            proc.supportedGenders = ["someGender"];
+
+            var d = [{gender: "someGender", lowerAge: 10, upperAge: null, count: 1}];
+
+            var r = proc.combineByGender(d);
+
+            assert.deepEqual(r, {"someGender": {"10+": 1}});
+
+            done();
+
+        });
+
+        it("should return only gender types in proc.supportedGenders", function (done) {
+
+            proc.supportedGenders = ["someGender"];
+
+            var d = [
+                {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
+                {gender: "someOtherGender", lowerAge: 0, upperAge: 1, count: 1}
+            ];
+
+            var r = proc.combineByGender(d);
+
+            assert.deepEqual(r, {"someGender": {"0-1": 1}});
+
+            done();
+
+        });
+
+        it("should combined multiple values of the same age range and gender", function (done) {
+
+            proc.supportedGenders = ["someGender"];
+
+            var d = [
+                {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
+                {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1}
+            ];
+
+            var r = proc.combineByGender(d);
+
+            assert.deepEqual(r, {"someGender": {"0-1": 2}});
+
+            done();
+
+        });
+
+        it("should combine different age ranges under the same gender", function (done) {
+
+            proc.supportedGenders = ["someGender"];
+
+            var d = [
+                {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
+                {gender: "someGender", lowerAge: 2, upperAge: 3, count: 1}
+            ];
+
+            var r = proc.combineByGender(d);
+
+            assert.deepEqual(r, {"someGender": {"0-1": 1, "2-3": 1}});
+
+            done();
+
+        });
+
+        it("should combine different age ranges and genders correctly", function (done) {
+
+            proc.supportedGenders = ["someGender", "anotherGender"];
+
+            var d = [
+                {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
+                {gender: "someGender", lowerAge: 2, upperAge: 3, count: 1},
+                {gender: "anotherGender", lowerAge: 0, upperAge: 1, count: 1},
+                {gender: "anotherGender", lowerAge: 2, upperAge: 3, count: 1}
+            ];
+
+            var expected = {
+
+                "someGender"   : {
+                    "0-1": 1,
+                    "2-3": 1
+                },
+                "anotherGender": {
+                    "0-1": 1,
+                    "2-3": 1
+                }
+
+            };
+
+            var r = proc.combineByGender(d);
+
+            assert.deepEqual(r, expected);
 
             done();
 

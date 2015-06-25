@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node init.js",
     "test": "istanbul cover _mocha -- --recursive -R spec",
+    "test-coverage": "istanbul cover _mocha -- --recursive -R spec; open coverage/lcov-report/index.html",
     "gen-docs" : "jsdoc -r ./lib -d doc/jsDoc; open doc/jsDoc/index.html" 
   },
   "author": "Andrew Hobden <andrew+scoop@hoverbear.org>, Ryan Habibi <rphabibi@uvic.ca>",

@@ -1,71 +1,71 @@
-var assert = require("assert")
+var assert = require("assert");
 
-var RatioResultManager = require('../../lib/resultManager/RatioResultManager.js').RatioResultManager; 
+var RatioResultManager = require('../../lib/resultManager/RatioResultManager.js').RatioResultManager;
 
-var proc    = null; 
-var rrm     = null; 
-var testData = null; 
+var proc     = null;
+var rrm      = null;
+var testData = null;
 
-describe("RatioResultManager", function(){
+describe("RatioResultManager", function () {
 
-    beforeEach(function(done){
+    beforeEach(function (done) {
 
-        proc = {}; 
+        proc = {};
 
         testData = {
 
-            aggregate_result : {
+            aggregate_result: {
 
-                "denominator_cpsid" : 5,
-                "numerator_cpsid" : 4, 
-                "denominator_cpsid1" : 2,
-                "numerator_cpsid1" : 1,
-                "numerator_cpsid4" : 10,
-                "denominator_cpsid4" : 20,
-                "numerator_cpsid11" : 10,
-                "denominator_cpsid11" : 20 
+                "denominator_cpsid": 5,
+                "numerator_cpsid": 4,
+                "denominator_cpsid1": 2,
+                "numerator_cpsid1": 1,
+                "numerator_cpsid4": 10,
+                "denominator_cpsid4": 20,
+                "numerator_cpsid11": 10,
+                "denominator_cpsid11": 20
 
             }
 
         };
 
-        rrm = RatioResultManager('cpsid', testData, proc); 
-
-        done(); 
-
-    });
-
-    afterEach(function(done){
-
-        proc        = null; 
-        testData    = null;
-        rrm         = null; 
+        rrm = RatioResultManager('cpsid', testData, proc);
 
         done();
 
     });
 
-    describe("#createDataObjectFromSplit()", function(){
+    afterEach(function (done) {
+
+        proc     = null;
+        testData = null;
+        rrm      = null;
+
+        done();
+
+    });
+
+    describe("#createDataObjectFromSplit()", function () {
 
 
-        var rex     = null; 
+        var rex = null;
 
-        beforeEach(function(done){
+        beforeEach(function (done) {
 
-            rex     = new RegExp(proc.regexString,'gi');
-            done(); 
+            rex = new RegExp(proc.regexString, 'gi');
+            done();
 
         });
 
-        afterEach(function(done){
+        afterEach(function (done) {
 
-            rex     = null; 
+            rex = null;
 
-            done(); 
+            done();
 
         });
 
-        it('should generate an object with field="denominator" and clinician="cpsid1"', function(done){
+        it('should generate an object with field="denominator" and clinician="cpsid1"', function (done) {
 
             var s = "denominator_cpsid1";
             var r = proc.createDataObjectFromSplit(rex.exec(s));
@@ -76,15 +76,15 @@ describe("RatioResultManager", function(){
 
         });
 
-        it('should return null since there are no matches provided', function(done){
+        it('should return null since there are no matches provided', function (done) {
 
             var r = proc.createDataObjectFromSplit();
-            assert.equal(null,r);
-            done(); 
+            assert.equal(null, r);
+            done();
 
         });
 
-        it('should return null since the string does not match the proc.regexString', function(done){
+        it('should return null since the string does not match the proc.regexString', function (done) {
 
             var s = "notDenominator_invalidCharSet_notAnId";
             var r = proc.createDataObjectFromSplit(rex.exec(s));

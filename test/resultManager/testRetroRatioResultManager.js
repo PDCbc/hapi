@@ -1,85 +1,85 @@
-var assert  = require("assert");
-var fs      = require('fs');
+var assert = require("assert");
+var fs     = require('fs');
 
-var RetroRatioResultManager = require('../../lib/resultManager/RetroRatioResultManager.js').RetroRatioResultManager; 
-var fixedTestData = require("../fixtures/retro_test_data.js").data;
-var expectedTestResult = require("../fixtures/retro_test_data.js").expected;
+var RetroRatioResultManager = require('../../lib/resultManager/RetroRatioResultManager.js').RetroRatioResultManager;
+var fixedTestData           = require("../fixtures/retro_test_data.js").data;
+var expectedTestResult      = require("../fixtures/retro_test_data.js").expected;
 
-var proc    = null; 
-var rrm     = null; 
-var testData = null; 
-var testGroups = null; 
+var proc       = null;
+var rrm        = null;
+var testData   = null;
+var testGroups = null;
 
-describe("RetroRatioResultManager", function(){
+describe("RetroRatioResultManager", function () {
 
-    beforeEach(function(done){
+    beforeEach(function (done) {
 
-        proc = {}; 
+        proc = {};
 
         testData = fixedTestData.executions;
 
         testGroups = [
 
             {
-                name:'test1',
-                members:['cpsid1','cpsid2', 'cpsid3', 'cpsid']
-            },{
-                name:'test2',
-                members:['cpsid4']
-            },{
+                name: 'test1',
+                members: ['cpsid1', 'cpsid2', 'cpsid3', 'cpsid']
+            }, {
+                name: 'test2',
+                members: ['cpsid4']
+            }, {
                 name: "test3",
-                members : []
-            },{
-                name : "test4",
-                members : ['cpsid10'] //this combined with group test5 create a case where the 
-                                      //id cpsid10 is in the same group.
-            },{
-                name : "test5",
-                members : ['cpsid10', 'cpsid11']
+                members: []
+            }, {
+                name: "test4",
+                members: ['cpsid10'] //this combined with group test5 create a case where the
+                                     //id cpsid10 is in the same group.
+            }, {
+                name: "test5",
+                members: ['cpsid10', 'cpsid11']
             }
 
-        ]
+        ];
 
 
-        rrm = RetroRatioResultManager('cpsid', testData, proc); 
+        rrm = RetroRatioResultManager('cpsid', testData, proc);
 
         proc.groups.setData(testGroups);
-
-        done(); 
-
-    });
-
-    afterEach(function(done){
-
-        proc        = null; 
-        testData    = null;
-        testGroups  = null; 
-        rrm         = null; 
 
         done();
 
     });
 
-    describe("#createDataObjectFromSplit()", function(){
+    afterEach(function (done) {
 
-        var rex     = null; 
+        proc       = null;
+        testData   = null;
+        testGroups = null;
+        rrm        = null;
 
-        beforeEach(function(done){
+        done();
 
-            rex     = new RegExp(proc.regexString,'gi');
-            done(); 
+    });
+
+    describe("#createDataObjectFromSplit()", function () {
+
+        var rex = null;
+
+        beforeEach(function (done) {
+
+            rex = new RegExp(proc.regexString, 'gi');
+            done();
 
         });
 
-        afterEach(function(done){
+        afterEach(function (done) {
 
-            rex     = null; 
+            rex = null;
 
-            done(); 
+            done();
 
         });
 
-        it('should generate an object with field="denominator" and clinician="cpsid1"', function(done){
+        it('should generate an object with field="denominator" and clinician="cpsid1"', function (done) {
 
             var s = "denominator_cpsid1";
             var r = proc.createDataObjectFromSplit(rex.exec(s));
@@ -90,15 +90,15 @@ describe("RetroRatioResultManager", function(){
 
         });
 
-        it('should return null since there are no matches provided', function(done){
+        it('should return null since there are no matches provided', function (done) {
 
             var r = proc.createDataObjectFromSplit();
-            assert.equal(null,r);
-            done(); 
+            assert.equal(null, r);
+            done();
 
         });
 
-        it('should return null since the string does not match the proc.regexString', function(done){
+        it('should return null since the string does not match the proc.regexString', function (done) {
 
             var s = "notDenominator_invalidCharSet_notAnId";
             var r = proc.createDataObjectFromSplit(rex.exec(s));
@@ -109,9 +109,9 @@ describe("RetroRatioResultManager", function(){
 
     });
 
-    describe("#generateResult()", function(){
+    describe("#generateResult()", function () {
 
-        it('test for a valid data to be returned', function(done){
+        it('test for a valid data to be returned', function (done) {
 
             var r = proc.generateResult(proc.data);
 
@@ -121,7 +121,7 @@ describe("RetroRatioResultManager", function(){
 
         });
 
-        it('test for empty result if undefined input is provided', function(done){
+        it('test for empty result if undefined input is provided', function (done) {
 
             var r = proc.generateResult(null);
 
@@ -135,11 +135,11 @@ describe("RetroRatioResultManager", function(){
 
     });
 
-    describe("#getFormattedData()", function(){
+    describe("#getFormattedData()", function () {
 
-        it('test for valid data to be returned', function(done){
+        it('test for valid data to be returned', function (done) {
 
-            rrm.getFormattedData(function(result){
+            rrm.getFormattedData(function (result) {
 
                 assert.deepEqual(result, expectedTestResult);
                 done();

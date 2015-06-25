@@ -1,102 +1,102 @@
-var assert = require("assert")
+var assert = require("assert");
 
-var ResultManager = require('../../lib/resultManager/ResultManager.js').ResultManager; 
+var ResultManager = require('../../lib/resultManager/ResultManager.js').ResultManager;
 
-var rm          = null;
-var testData    = null; 
-var proc        = null; 
+var rm       = null;
+var testData = null;
+var proc     = null;
 
-var createDataObjectFromSplit = function(matches){
+var createDataObjectFromSplit = function (matches) {
 
-    if ( !matches || matches.length !== 3 ){
+    if (!matches || matches.length !== 3) {
 
         logger.debug("Parameter matches was invalid input to RatioResultManager.createDataObjectFromSplit()");
-        return null; 
+        return null;
 
     }
 
     return {
 
-        field : matches[1],
-        clinician : matches[2]
+        field: matches[1],
+        clinician: matches[2]
 
     };
 
-}; 
+};
 
-describe('ResultManager', function(){
+describe('ResultManager', function () {
 
-    beforeEach(function(done){
+    beforeEach(function (done) {
 
-        proc = {}
+        proc = {};
 
         testGroups = [
 
             {
-                name:'test1',
-                members:['cpsid1','cpsid2', 'cpsid3', 'cpsid']
-            },{
-                name:'test2',
-                members:['cpsid4']
-            },{
+                name: 'test1',
+                members: ['cpsid1', 'cpsid2', 'cpsid3', 'cpsid']
+            }, {
+                name: 'test2',
+                members: ['cpsid4']
+            }, {
                 name: "test3",
-                members : []
-            },{
-                name : "test4",
-                members : ['cpsid10'] //this combined with group test5 create a case where the 
-                                      //id cpsid10 is in the same group.
-            },{
-                name : "test5",
-                members : ['cpsid10', 'cpsid11']
+                members: []
+            }, {
+                name: "test4",
+                members: ['cpsid10'] //this combined with group test5 create a case where the
+                                     //id cpsid10 is in the same group.
+            }, {
+                name: "test5",
+                members: ['cpsid10', 'cpsid11']
             }
 
-        ]
+        ];
 
         testData = {
 
-            aggregate_result : {
+            aggregate_result: {
 
-                "denominator_cpsid" : 5,
-                "numerator_cpsid" : 4, 
-                "denominator_cpsid1" : 2,
-                "numerator_cpsid1" : 1,
-                "numerator_cpsid4" : 10,
-                "denominator_cpsid4" : 20,
-                "numerator_cpsid11" : 10,
-                "denominator_cpsid11" : 20 
+                "denominator_cpsid": 5,
+                "numerator_cpsid": 4,
+                "denominator_cpsid1": 2,
+                "numerator_cpsid1": 1,
+                "numerator_cpsid4": 10,
+                "denominator_cpsid4": 20,
+                "numerator_cpsid11": 10,
+                "denominator_cpsid11": 20
 
             }
 
         };
 
-        rm = ResultManager("cpsid", testData, proc); 
+        rm = ResultManager("cpsid", testData, proc);
 
         proc.regexString = "^(numerator+|denominator+)_(.+)$";
 
-        proc.createDataObjectFromSplit = createDataObjectFromSplit; 
+        proc.createDataObjectFromSplit = createDataObjectFromSplit;
 
         proc.groups.setData(testGroups);
-
-        done(); 
-
-    });
-
-    afterEach(function(done){
-
-        proc.regexString                = null;
-        proc.createDataObjectFromSplit  = null; 
-        proc.groups                     = null; 
-        proc                            = null; 
-        rm                              = null; 
 
         done();
 
     });
 
-    describe('#getData()', function(){
-        it('should return data for 3 providers', function( done ){
+    afterEach(function (done) {
 
-           var result = proc.getData(); 
+        proc.regexString               = null;
+        proc.createDataObjectFromSplit = null;
+        proc.groups                    = null;
+        proc                           = null;
+        rm                             = null;
+
+        done();
+
+    });
+
+    describe('#getData()', function () {
+        it('should return data for 3 providers', function (done) {
+
+            var result = proc.getData();
 
             assert.equal(result.length, 8);
 
@@ -116,15 +116,15 @@ describe('ResultManager', function(){
             assert.equal(result[3].clinician, 'cpsid1');
             assert.equal(result[3].count, 1);
 
-            done(); 
+            done();
 
-        }); 
+        });
 
-        it('should return an empty array of data if the data input is empty', function(done){
+        it('should return an empty array of data if the data input is empty', function (done) {
 
-            proc.data = {}; 
+            proc.data = {};
 
-            var result = proc.getData(); 
+            var result = proc.getData();
 
             assert.equal(result.length, 0);
 
@@ -132,9 +132,9 @@ describe('ResultManager', function(){
 
         });
 
-        it('should thrown an exception if proc.regexString is falsey', function(done){
+        it('should thrown an exception if proc.regexString is falsey', function (done) {
 
-            proc.regexString = null; 
+            proc.regexString = null;
 
             assert.throws(proc.getData);
 
@@ -144,26 +144,26 @@ describe('ResultManager', function(){
 
     });
 
-    describe("#getNetwork()", function(){
+    describe("#getNetwork()", function () {
 
-        it("should return 3 providers of data", function(done){
+        it("should return 3 providers of data", function (done) {
 
-            var result = rm.getNetwork(); 
+            var result = rm.getNetwork();
 
             assert.equal(result.length, 8);
 
-            done(); 
+            done();
 
         });
 
     });
 
-    describe("#getGroup()", function(){
+    describe("#getGroup()", function () {
 
 
-        it('should return 2 providers with their data', function(done){
+        it('should return 2 providers with their data', function (done) {
 
-            var result = rm.getGroup(); 
+            var result = rm.getGroup();
 
             assert.equal(result.length, 4);
 
@@ -176,11 +176,11 @@ describe('ResultManager', function(){
 
     });
 
-    describe('#getSelf()', function(){
+    describe('#getSelf()', function () {
 
-        it('should return 1 provider with their data', function(done){
+        it('should return 1 provider with their data', function (done) {
 
-            var result = rm.getSelf(); 
+            var result = rm.getSelf();
 
             assert.equal(result.length, 2);
             assert.equal(result[0].clinician, 'cpsid');
@@ -194,9 +194,9 @@ describe('ResultManager', function(){
 
     });
 
-    describe("#createDataObjectFromSplit()", function(){
+    describe("#createDataObjectFromSplit()", function () {
 
-        it("should throw an error since this is not implemented.", function(done){
+        it("should throw an error since this is not implemented.", function (done) {
 
             assert.throws(proc.createDataObjectFromSplit);
 
@@ -205,5 +205,5 @@ describe('ResultManager', function(){
         });
 
     });
-     
+
 });

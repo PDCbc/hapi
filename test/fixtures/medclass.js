@@ -120,8 +120,8 @@ var testResult = {
         'N02_whoATC_cpsid4': 13,
         'N05_whoATC_cpsid4': 7,
         'N06_whoATC_cpsid4': 1,
-        'R03_whoATC_cpsid4': 4, 
+        'R03_whoATC_cpsid4': 4
     }
 };
 
-module.exports = {testResult : testResult};
+module.exports = {testResult: testResult};

@@ -228,9 +228,9 @@ describe('DemographicsResultManager', function () {
 
             var r = proc.generateResult();
 
-            assert.deepEqual(r.clinician[0], require('../fixtures/demographics_test_data.js').expectedOutput.clinician[0]);
-            assert.deepEqual(r.group[0], require('../fixtures/demographics_test_data.js').expectedOutput.group[0]);
-            assert.deepEqual(r.network[0], require('../fixtures/demographics_test_data.js').expectedOutput.network[0]);
+            assert.deepEqual(r.processed_result.clinician[0], require('../fixtures/demographics_test_data.js').expectedOutput.processed_result.clinician[0]);
+            assert.deepEqual(r.processed_result.group[0], require('../fixtures/demographics_test_data.js').expectedOutput.processed_result.group[0]);
+            assert.deepEqual(r.processed_result.network[0], require('../fixtures/demographics_test_data.js').expectedOutput.processed_result.network[0]);
 
             done();
 

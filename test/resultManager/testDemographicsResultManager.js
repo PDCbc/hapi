@@ -286,6 +286,9 @@ describe('DemographicsResultManager', function () {
 
             var d = [{gender: "NoAValidGenderType", lowerAge: 0, upperAge: 1, count: 1}];
 
+            proc.supportedGenders   = [];
+            proc.supportedAgeRanges = ['0-1'];
+
             var r = proc.combineByGender(d);
 
             assert.equal(r, null);
@@ -297,6 +300,7 @@ describe('DemographicsResultManager', function () {
         it("should return lowerAge+ if upperAge is null", function (done) {
 
             proc.supportedGenders = ["someGender"];
+            proc.supportedAgeRanges = ['10+'];
 
             var d = [{gender: "someGender", lowerAge: 10, upperAge: null, count: 1}];
 
@@ -311,6 +315,7 @@ describe('DemographicsResultManager', function () {
         it("should return only gender types in proc.supportedGenders", function (done) {
 
             proc.supportedGenders = ["someGender"];
+            proc.supportedAgeRanges = ['0-1'];
 
             var d = [
                 {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
@@ -328,6 +333,7 @@ describe('DemographicsResultManager', function () {
         it("should combined multiple values of the same age range and gender", function (done) {
 
             proc.supportedGenders = ["someGender"];
+            proc.supportedAgeRanges = ['0-1'];
 
             var d = [
                 {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
@@ -345,6 +351,7 @@ describe('DemographicsResultManager', function () {
         it("should combine different age ranges under the same gender", function (done) {
 
             proc.supportedGenders = ["someGender"];
+            proc.supportedAgeRanges = ['0-1', '2-3'];
 
             var d = [
                 {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},
@@ -362,6 +369,7 @@ describe('DemographicsResultManager', function () {
         it("should combine different age ranges and genders correctly", function (done) {
 
             proc.supportedGenders = ["someGender", "anotherGender"];
+            proc.supportedAgeRanges = ['0-1', '2-3'];
 
             var d = [
                 {gender: "someGender", lowerAge: 0, upperAge: 1, count: 1},

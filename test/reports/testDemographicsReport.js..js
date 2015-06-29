@@ -29,7 +29,7 @@ describe("DemographicsReport", function () {
         beforeEach(function (done) {
 
             proc   = {};
-            report = demoReport.DemographicsReport("someName", "someName", proc);
+            report = demoReport.DemographicsReport("someName", "someName", null, proc);
 
             done();
 

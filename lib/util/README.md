@@ -19,10 +19,11 @@ Currently, the utility supports the following three reports/queries:
 
 To run the utility use the following command (in the this `util/` directory). 
  
-    QUERY=PDC-XXX EXECUTION_DATE=7 node generateReports.js
+    QUERY=PDC-XXX EXECUTION_DATE=7 PROVIDER_LEVEL=true node generateReports.js
     
 * `QUERY=PDC-XXX` is the name of one of the supported query types.
 * `EXECUTION_DATE=7` is the date of the month that we are using to space the execution. `7` will take execution results from the 7th of each month if they exist. 
+* `PROVIDER_LEVEL=true` (for applicable reports) determines whether the generated report will be at the provider or group level.   
 
 The generated report will be placed in `util/report.csv`
 

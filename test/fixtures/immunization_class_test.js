@@ -5,7 +5,6 @@
  * Contains test data for the immunization classification routes/reports.
  */
 
-
 module.exports.data = [
     {
         "time"            : 1420142400,

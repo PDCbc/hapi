@@ -8,3 +8,4 @@ coverage.html
 npm-debug.log
 doc/jsDoc/*
 coverage/*
+lib/util/report.csv

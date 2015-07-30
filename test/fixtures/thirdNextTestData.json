@@ -1,0 +1,74 @@
+[
+  {
+    "clinic": "ep0",
+    "date": 1420120055,
+    "clinicians": [
+      {
+        "clinician": "cpsid",
+        "3rdnext": 3
+      },
+      {
+        "clinician": "cpsid2",
+        "3rdnext": 4
+      }
+    ]
+  },
+  {
+    "clinic": "ep1",
+    "date": 1420120055,
+    "clinicians": [
+      {
+        "clinian": "cpsid4",
+        "3rdnext": 7
+      }
+    ]
+  },
+  {
+    "clinic": "ep0",
+    "date": 1422798455,
+    "clinicians": [
+      {
+        "clinician": "cpsid",
+        "3rdnext": 3
+      },
+      {
+        "clinician": "cpsid2",
+        "3rdnext": 4
+      }
+    ]
+  },
+  {
+    "clinic": "ep1",
+    "date": 1422798455,
+    "clinicians": [
+      {
+        "clincian": "cpsid4",
+        "3rdnext": 8
+      }
+    ]
+  },
+  {
+    "clinic": "ep0",
+    "date": 1425217655,
+    "clinicians": [
+      {
+        "clinician": "cpsid",
+        "3rdnext": 3
+      },
+      {
+        "clinician": "cpsid2",
+        "3rdnext": 4
+      }
+    ]
+  },
+  {
+    "clinic": "ep1",
+    "date": 1425217655,
+    "clinicians": [
+      {
+        "clincian": "cpsid4",
+        "3rdnext": 8
+      }
+    ]
+  }
+]

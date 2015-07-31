@@ -56,9 +56,9 @@ describe("queries", function () {
 
         });
 
-        it("should return null if query is not in data", function (done) {
+        it("should return ratio if query is not in data", function (done) {
 
-            assert.equal(null, queries.getQueryType('NOT_A_TITLE'));
+            assert.equal('ratio', queries.getQueryType('NOT_A_TITLE'));
 
             done();
 

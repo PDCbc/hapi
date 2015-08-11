@@ -21,7 +21,7 @@ async.auto({
     models: require('./lib/models'),
     routes: require('./lib/routes'),
     integrity_routes: require('./lib/routes/integrity_routes'),
-    demoprahic_routes: require('./lib/routes/demographic_routes'),
+    demographic_routes: require('./lib/routes/demographic_routes'),
     medclass_routes: require('./lib/routes/medclass_routes'),
     report_routes: require('./lib/routes/report_routes'),
     retro_routes: require('./lib/routes/retrospective_routes')

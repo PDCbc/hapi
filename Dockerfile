@@ -34,6 +34,19 @@ RUN ( \
       echo "export DCLAPI_URI=\${URL_DCLAPI}"; \
       echo ""; \
       echo ""; \
+      echo "# Copy groups.json if not present"; \
+      echo "# "; \
+      echo "if([ ! -d /home/app/groups/ ]||[ ! -s /home/app/groups/groups.json ])"; \
+      echo "then"; \
+      echo "  ("; \
+      echo "    mkdir -p /home/app/groups"; \
+      echo "    cp /app/groups.json /home/app/groups/"; \
+      echo "  )||("; \
+      echo "    ERROR: /home/app/groups/groups.json initialization unsuccessful >&2"; \
+      echo "  )"; \
+      echo "fi"; \
+      echo ""; \
+      echo ""; \
       echo "# Start service"; \
       echo "#"; \
       echo "cd /app/"; \

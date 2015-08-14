@@ -456,14 +456,14 @@ describe('TimedReport', function () {
         });
 
 
-        it("should return null if the start object is the only value in the array", function (done) {
+        it("should return single object is in the input", function (done) {
 
             var exes  = [{time: 1}];
             var start = {time: 1};
 
             var r = proc.getExecutionsSeparatedByOneMonth(start, exes);
 
-            assert.equal(r, null);
+            assert.equal(r[0].time, 1);
 
             done();
         });

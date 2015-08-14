@@ -206,4 +206,78 @@ describe('ResultManager', function () {
 
     });
 
+    describe("#privacyFilter()", function () {
+
+        it("should throw an Error if the input is null", function (done) {
+
+            assert.throws(function () {
+                    proc.privacyFilter(null);
+                },
+                Error
+            );
+
+            done();
+
+        });
+
+        it("should throw an Error if the input is undefined", function (done) {
+
+            assert.throws(function () {
+                    proc.privacyFilter();
+                },
+                Error
+            );
+
+            done();
+
+        });
+
+        it("should throw an Error if the input is non-number", function (done) {
+
+            assert.throws(function () {
+                    proc.privacyFilter("NOT A NUMBER");
+                },
+                Error
+            );
+
+            done();
+
+        });
+
+        it("should return the number if it is greater than 5", function (done) {
+
+            var r = proc.privacyFilter(10);
+            assert.equal(r, 10);
+            done();
+
+        });
+
+        it("should return 5 if the input is 5", function (done) {
+
+            var r = proc.privacyFilter(5);
+            assert.equal(r, 5);
+            done();
+
+        });
+
+        it("should return 0 if the input is less than 5", function (done) {
+
+            var r = proc.privacyFilter(4);
+            assert.equal(r, 0);
+            done();
+
+        });
+
+        it("should return 0 if the input is 0", function (done) {
+
+            var r = proc.privacyFilter(0);
+            assert.equal(r, 0);
+            done();
+
+        });
+
+    });
+
 });
+
+

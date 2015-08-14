@@ -140,107 +140,107 @@ var y = {
         clinician: [{
             aggregate_result: {numerator: 8, denominator: 10},
             time        : 1420143132,
-            display_name: 'clinician'
+            display_name: 'Clinician'
         },
             {
                 aggregate_result: {numerator: 8, denominator: 10},
                 time        : 1421352732,
-                display_name: 'clinician'
+                display_name: 'Clinician'
             },
             {
                 aggregate_result: {numerator: 9, denominator: 11},
                 time        : 1422821532,
-                display_name: 'clinician'
+                display_name: 'Clinician'
             },
             {
                 aggregate_result: {numerator: 13, denominator: 15},
                 time        : 1424031132,
-                display_name: 'clinician'
+                display_name: 'Clinician'
             },
             {
                 aggregate_result: {numerator: 13, denominator: 15},
                 time        : 1425240732,
-                display_name: 'clinician'
+                display_name: 'Clinician'
             },
             {
                 aggregate_result: {numerator: 13, denominator: 15},
                 time        : 1426446732,
-                display_name: 'clinician'
+                display_name: 'Clinician'
             },
             {
                 aggregate_result: {numerator: 13, denominator: 15},
                 time        : 1427915532,
-                display_name: 'clinician'
+                display_name: 'Clinician'
             }],
         group    : [{
             aggregate_result: {numerator: 48, denominator: 60},
             time        : 1420143132,
-            display_name: 'group (test1)'
+            display_name: 'Group (test1)'
         },
             {
                 aggregate_result: {numerator: 48, denominator: 60},
                 time        : 1421352732,
-                display_name: 'group (test1)'
+                display_name: 'Group (test1)'
             },
             {
                 aggregate_result: {numerator: 51, denominator: 63},
                 time        : 1422821532,
-                display_name: 'group (test1)'
+                display_name: 'Group (test1)'
             },
             {
                 aggregate_result: {numerator: 57, denominator: 69},
                 time        : 1424031132,
-                display_name: 'group (test1)'
+                display_name: 'Group (test1)'
             },
             {
                 aggregate_result: {numerator: 57, denominator: 69},
                 time        : 1425240732,
-                display_name: 'group (test1)'
+                display_name: 'Group (test1)'
             },
             {
                 aggregate_result: {numerator: 57, denominator: 69},
                 time        : 1426446732,
-                display_name: 'group (test1)'
+                display_name: 'Group (test1)'
             },
             {
                 aggregate_result: {numerator: 57, denominator: 69},
                 time        : 1427915532,
-                display_name: 'group (test1)'
+                display_name: 'Group (test1)'
             }],
         network  : [{
             aggregate_result: {numerator: 80, denominator: 100},
             time        : 1420143132,
-            display_name: 'network'
+            display_name: 'Network'
         },
             {
                 aggregate_result: {numerator: 80, denominator: 100},
                 time        : 1421352732,
-                display_name: 'network'
+                display_name: 'Network'
             },
             {
                 aggregate_result: {numerator: 83, denominator: 103},
                 time        : 1422821532,
-                display_name: 'network'
+                display_name: 'Network'
             },
             {
                 aggregate_result: {numerator: 90, denominator: 110},
                 time        : 1424031132,
-                display_name: 'network'
+                display_name: 'Network'
             },
             {
                 aggregate_result: {numerator: 90, denominator: 110},
                 time        : 1425240732,
-                display_name: 'network'
+                display_name: 'Network'
             },
             {
                 aggregate_result: {numerator: 90, denominator: 110},
                 time        : 1426446732,
-                display_name: 'network'
+                display_name: 'Network'
             },
             {
                 aggregate_result: {numerator: 90, denominator: 110},
                 time        : 1427915532,
-                display_name: 'network'
+                display_name: 'Network'
             }],
         anonymous: {
             PROVIDER_b5d8317dd6d7b4d700e62e444021e85b0c7b2642eaef93d1291e3163: [{

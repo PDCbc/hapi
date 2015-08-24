@@ -21,6 +21,17 @@ var schema = Schema({
         type: String,
         required: true
     },
+    display_name: String,
+    unit        : String,
+    target      : {
+        value      : String,
+        reference  : String,
+        description: String
+    },
+    panels      : [],
+    query_type  : String,
+    contact     : String,
+
 /**** TODO: 3-001 Fieran needs to change here because they are not ObjectIDs. ****/
     executions: [
       {

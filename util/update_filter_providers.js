@@ -9,6 +9,8 @@
 * 
 * Usage: $ node update_filter_providers.js <PROVIDER_ID> <INITIATIVE_ID> 
 */
+
+
 var mongoose = require('mongoose');
 var util = require('util'); 
 
@@ -20,7 +22,9 @@ if(process.argv.length !== 4){
 var PROVIDER = process.argv[2];
 var INIT = process.argv[3];
 
-mongoose.connect(process.env.MONGO_URI); 
+var MONGO = process.env.MONGO_URI || "mongodb://hubdb:27017/query_composer_development"; 
+
+mongoose.connect(MONGO); 
 
 var db = mongoose.connection; 
 
@@ -43,8 +47,6 @@ db.once('open', function(cb){
 
 		var def = fun.definition; 
 
-		console.log(def); 
-
 		var r = RegExp(/function initatives\(\)\{\s*return\s*(\{[\s\S]*?\})\s*;\s*\}\s*$/);		
 
 		//get the JSON from the library_function.
@@ -66,24 +68,24 @@ db.once('open', function(cb){
 			i[INIT] = [PROVIDER]
 		}
 
-		console.log(i)
-		
 		s = s.replace("$$$$", JSON.stringify(i)); 
 		
 		fun.definition = s; 
 
-		console.log(fun); 
-
 		fun.save(function(err){
 
-			if(err) console.log(err); 
-			db.close(); 
-			process.exit(0); 
+			if(err){
+				console.log(err);
+				db.close(); 
+				process.exit(1); 
+			}else{
+				console.log("Successfully added provider: " +PROVIDER+" to initiative: "+INIT);  
+				db.close(); 
+				process.exit(0); 
+			}
 
 		}); 
 
 	}); 	
 
 }); 
-
-

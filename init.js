@@ -14,6 +14,7 @@ var async = require('async'),
 
 async.auto({
     environment: require('./lib/environment'),
+    groups: require('./lib/groups').setupGroups,
     database: require('./lib/database'),
     certificate: require('./lib/certificate'),
     httpd: require('./lib/httpd'),

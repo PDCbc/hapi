@@ -3,6 +3,7 @@
 cert
 .vagrant
 roles
+groups/
 runme.sh
 coverage.html
 npm-debug.log

@@ -1,21 +1,24 @@
 [
   {
     "name": "PPhRR1",
+    "initiative": "PPhRR",
     "members": [
       "cpsid1",
       "cpsid2",
       "cpsid3",
       "cpsid",
       "cpsid10",
-      "PdYAEtthZ5lDNDK9zXQChxY8fmqdI2oXbfAfTQ==",
       "oscar",
       "osler"
     ]
   },
   {
-    "name": "PPhRR2",
+    "name": "Attachment1",
+    "initiative": "Attachment",
     "members": [
-      "cpsid4"
+      "cpsid4",
+      "oscar",
+      "cpsid"
     ]
   }
 ]

@@ -1,24 +1,60 @@
 # Dockerfile for the PDC's HAPI service
 #
-# Base image
+#
+# Hub API used by the PDC's Visualizer.  Links to Auth, HubDB and DCLAPI.
+#
+# Example:
+# sudo docker pull pdcbc/hapi
+# sudo docker run -d --name=hapi -h hapi --restart=always \
+#   --link auth:auth \
+#   --link dclapi:dclapi \
+#   --link hubdb:hubdb \
+#   pdcbc/hapi
+#
+# Linked containers
+# - Auth:            --link auth:auth
+# - DCLAPI:          --link dclapi:dclapi
+# - HubDB:           --link hubdb:hubdb
+#
+# Modify default settings
+# - DACS federation: -e DACS_FEDERATION=<string>
+# -    jurisdiction: -e DACS_JURISDICTION=<string>
+# - Node secret:     -e NODE_SECRET=<string>
+# - Reject non-CA    -e REJECT_NONCA_CERTS=<0/1>
+#     certificates?:
+#
+# Releases
+# - https://github.com/PDCbc/hapi/releases
+#
 #
 FROM phusion/passenger-nodejs
+MAINTAINER derek.roberts@gmail.com
+ENV RELEASE 0.1.8
 
 
-# Update system, install Python 2.7
+# Packages
 #
-ENV DEBIAN_FRONTEND noninteractive
-RUN echo 'Dpkg::Options{ "--force-confdef"; "--force-confold" }' \
-      >> /etc/apt/apt.conf.d/local
 RUN apt-get update; \
-    apt-get upgrade -y; \
-    apt-get install -y python2.7
+    apt-get install -y \
+      git \
+      python2.7; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+# Prepare /app/ folder
+#
+WORKDIR /app/
+RUN git clone https://github.com/pdcbc/hapi.git . -b ${RELEASE}; \
+    npm config set python /usr/bin/python2.7; \
+    npm install; \
+    chown -R app:app /app/
 
 
 # Create startup script and make it executable
 #
-RUN mkdir -p /etc/service/app/
-RUN ( \
+RUN mkdir -p /etc/service/app/; \
+    ( \
       echo "#!/bin/bash"; \
       echo "#"; \
       echo "set -e -o nounset"; \
@@ -26,12 +62,15 @@ RUN ( \
       echo ""; \
       echo "# Environment variables"; \
       echo "#"; \
-      echo "export PORT=\${PORT_HAPI}"; \
+      echo "export PORT=\${PORT_HAPI:-3003}"; \
+      echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C:-3006}"; \
+      echo "export DCLAPI_URI=http://dclapi:\${PORT_DCLAPI:-3007}"; \
       echo "export MONGO_URI=mongodb://hubdb:27017/query_composer_development"; \
-      echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C}"; \
-      echo "export ROLES=\${DACS_ROLEFILE}"; \
-      echo "export SECRET=\${NODE_SECRET}"; \
-      echo "export DCLAPI_URI=\${URL_DCLAPI}"; \
+      echo "export HAPI_GROUPS=/home/app/groups/groups.json"; \
+      echo "#"; \
+      echo "export ROLES=/etc/dacs/federations/\${DACS_FEDERATION:-pdc.dev}/roles"; \
+      echo "export NODE_TLS_REJECT_UNAUTHORIZED=\${REJECT_NONCA_CERTS:-0}"; \
+      echo "export SECRET=\${NODE_SECRET:-notVerySecret}"; \
       echo ""; \
       echo ""; \
       echo "# Copy groups.json if not present"; \
@@ -52,17 +91,8 @@ RUN ( \
       echo "cd /app/"; \
       echo "/sbin/setuser app npm start"; \
     )  \
-      >> /etc/service/app/run
-RUN chmod +x /etc/service/app/run
-
-
-# Prepare /app/ folder
-#
-WORKDIR /app/
-COPY . .
-RUN npm config set python /usr/bin/python2.7
-RUN npm install
-RUN chown -R app:app /app/
+      >> /etc/service/app/run; \
+    chmod +x /etc/service/app/run
 
 
 # Run Command

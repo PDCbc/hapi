@@ -24,8 +24,8 @@
 # - DACS federation: -e DACS_FEDERATION=<string>
 # -    jurisdiction: -e DACS_JURISDICTION=<string>
 # - Node secret:     -e NODE_SECRET=<string>
-# - Reject non-CA    -e REJECT_NONCA_CERTS=<0/1>
-#     certificates?:
+# - Reject non-CA
+#     certificates?: -e REJECT_NONCA_CERTS=<0/1>
 #
 #
 FROM phusion/passenger-nodejs
@@ -61,15 +61,18 @@ RUN mkdir -p /etc/service/app/; \
       echo ""; \
       echo "# Environment variables"; \
       echo "#"; \
-      echo "export PORT=\${PORT_HAPI:-3003}"; \
-      echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C:-3006}"; \
-      echo "export DCLAPI_URI=http://dclapi:\${PORT_DCLAPI:-3007}"; \
-      echo "export MONGO_URI=mongodb://hubdb:27017/query_composer_development"; \
-      echo "export HAPI_GROUPS=/home/app/groups/groups.json"; \
+      echo "PORT_AUTH_C=\${PORT_AUTH_C:-3006}"; \
+      echo "DACS_FEDERATION=\${DACS_FEDERATION:-pdc.dev}"; \
       echo "#"; \
-      echo "export ROLES=/etc/dacs/federations/\${DACS_FEDERATION:-pdc.dev}/roles"; \
+      echo "export PORT=\${PORT_HAPI:-3003}"; \
+      echo "export DCLAPI_URI=http://dclapi:\${PORT_DCLAPI:-3007}"; \
       echo "export NODE_TLS_REJECT_UNAUTHORIZED=\${REJECT_NONCA_CERTS:-0}"; \
       echo "export SECRET=\${NODE_SECRET:-notVerySecret}"; \
+      echo "#"; \
+      echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C}"; \
+      echo "export HAPI_GROUPS=/home/app/groups/groups.json"; \
+      echo "export MONGO_URI=mongodb://hubdb:27017/query_composer_development"; \
+      echo "export ROLES=/etc/dacs/federations/\${DACS_FEDERATION}/roles"; \
       echo ""; \
       echo ""; \
       echo "# Copy groups.json if not present"; \

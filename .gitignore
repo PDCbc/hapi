@@ -10,3 +10,5 @@ npm-debug.log
 doc/jsDoc/*
 coverage/*
 lib/util/report.csv
+*.csv
+*.swp

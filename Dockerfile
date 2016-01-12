@@ -36,6 +36,7 @@ MAINTAINER derek.roberts@gmail.com
 #
 RUN apt-get update; \
     apt-get install -y \
+      libkrb5-dev \
       python2.7; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -104,3 +105,42 @@ VOLUME /app/util/job_params/
 VOLUME /home/autossh/.ssh/
 VOLUME /etc/ssh/
 VOLUME /root/.ssh/
+
+
+################################################################################
+# + Query Importer repo
+################################################################################
+
+
+# Prepare query importer
+#
+WORKDIR /app/
+RUN git clone https://github.com/pdcbc/queryImporter -b 0.2.1 ; \
+    cd queryImporter; \
+    npm config set python /usr/bin/python2.7; \
+    npm update -g npm; \
+    npm install
+
+
+# Create startup script and make it executable
+#
+RUN SCRIPT=/app/queryImporter/import_queries.sh; \
+    ( \
+      echo "#!/bin/bash"; \
+      echo "#"; \
+      echo "set -e -o nounset"; \
+      echo ""; \
+      echo ""; \
+      echo "# Environment variables"; \
+      echo "#"; \
+      echo "SKIP_INITS=\${SKIP_INITS:-true}"; \
+      echo ""; \
+      echo ""; \
+      echo "# Run importer"; \
+      echo "#"; \
+      echo "cd /app/queryImporter/"; \
+      echo "SKIP_INITS=\${SKIP_INITS} node index.js import --mongo-host=hubdb \
+            --mongo-db=query_composer_development --mongo-port=27017"; \
+    )  \
+      >> ${SCRIPT}; \
+    chmod +x ${SCRIPT}

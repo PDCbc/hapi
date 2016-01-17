@@ -101,10 +101,7 @@ CMD ["/sbin/my_init"]
 #
 EXPOSE 3003
 #
-VOLUME /app/util/job_params/
-VOLUME /home/autossh/.ssh/
-VOLUME /etc/ssh/
-VOLUME /root/.ssh/
+VOLUME /app/home/groups/
 
 
 ################################################################################

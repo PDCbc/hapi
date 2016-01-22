@@ -1,7 +1,7 @@
 # Dockerfile for the PDC's HAPI service
 #
 #
-# Hub API used by the PDC's Visualizer.  Links to Auth, HubDB and DCLAPI.
+# Hub API used by the PDC's Hub API (HAPI).  Links to Auth, HubDB and DCLAPI.
 #
 # Example:
 # sudo docker pull pdcbc/hapi
@@ -39,7 +39,10 @@ RUN apt-get update; \
       libkrb5-dev \
       python2.7; \
     apt-get clean; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    rm -rf \
+      /var/lib/apt/lists/* \
+      /tmp/* \
+      /var/tmp/*
 
 
 # Prepare /app/ folder
@@ -48,7 +51,9 @@ WORKDIR /app/
 COPY . .
 RUN chown -R app:app /app/; \
     /sbin/setuser app npm config set python /usr/bin/python2.7; \
-    /sbin/setuser app npm install
+    /sbin/setuser app npm install; \
+    cd lib/util/; \
+    npm install clone
 
 
 # Create startup script and make it executable
@@ -71,16 +76,16 @@ RUN mkdir -p /etc/service/app/; \
       echo "export SECRET=\${NODE_SECRET:-notVerySecret}"; \
       echo "#"; \
       echo "export AUTH_CONTROL=https://auth:\${PORT_AUTH_C}"; \
-      echo "export HAPI_GROUPS=/home/app/groups/groups.json"; \
+      echo "export HAPI_GROUPS=\${HAPI_GROUPS:-/volumes/groups/groups.json}"; \
       echo "export MONGO_URI=mongodb://hubdb:27017/query_composer_development"; \
       echo "export ROLES=/etc/dacs/federations/\${DACS_FEDERATION}/roles"; \
       echo ""; \
       echo ""; \
       echo "# Copy groups.json if not present"; \
       echo "#"; \
-      echo "mkdir -p /home/app/groups/"; \
-      echo "[ -s /home/app/groups/groups.json ]"; \
-      echo "    cp /app/groups.json /home/app/groups/"; \
+      echo "mkdir -p /volumes/groups/"; \
+      echo "[ -s /volumes/groups/groups.json ]|| \\"; \
+      echo "  cp /app/groups.json /volumes/groups/"; \
       echo ""; \
       echo ""; \
       echo "# Start service"; \

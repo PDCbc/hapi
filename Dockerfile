@@ -51,7 +51,9 @@ WORKDIR /app/
 COPY . .
 RUN chown -R app:app /app/; \
     /sbin/setuser app npm config set python /usr/bin/python2.7; \
-    /sbin/setuser app npm install
+    /sbin/setuser app npm install; \
+    cd lib/util/; \
+    npm install clone
 
 
 # Create startup script and make it executable

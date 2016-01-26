@@ -106,7 +106,8 @@ CMD ["/sbin/my_init"]
 #
 EXPOSE 3003
 #
-VOLUME /app/home/groups/
+VOLUME /volumes/groups/
+VOLUME /volumes/reports/
 
 
 ################################################################################

@@ -117,7 +117,7 @@ VOLUME /app/home/groups/
 # Prepare query importer
 #
 WORKDIR /app/
-RUN git clone https://github.com/pdcbc/queryImporter -b 0.2.1 ; \
+RUN git clone https://github.com/pdcbc/queryImporter -b 0.2.2 ; \
     cd queryImporter; \
     npm config set python /usr/bin/python2.7; \
     npm update -g npm; \

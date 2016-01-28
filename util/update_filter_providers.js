@@ -20,7 +20,7 @@ if(process.argv.length !== 4){
 }
 
 var PROVIDER = process.argv[2];
-var INIT = process.argv[3];
+var INIT = process.argv[3].toUpperCase();
 
 var MONGO = process.env.MONGO_URI || "mongodb://hubdb:27017/query_composer_development"; 
 
